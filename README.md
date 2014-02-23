@@ -1,0 +1,3 @@
+AndroidStringResourcesGenerator
+===============================
+Under construction
