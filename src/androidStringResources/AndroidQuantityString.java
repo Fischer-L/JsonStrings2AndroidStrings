@@ -9,42 +9,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class AndroidQuantityString extends AndroidStringBase {
+
+public class AndroidQuantityString extends AndroidStringItemsBase {
     
-    public AndroidQuantityString(String n, ArrayList<AndroidQuantityItem> items) {
-        super(n);
-                
-        // Remove items with invalid quantity btw
-        this.items = items;
-        for (AndroidQuantityItem i : this.items) {
-            if (!this.isValidQuantity(i)) {
-                this.items.remove(i);
-            }
-        }
+    public AndroidQuantityString(String n, ArrayList<AndroidQuantityItem> items) {  
+        super(n);  
         
-        this.itemsItr = this.items.iterator();
+        // Retain items with valid quantity
+        ArrayList<AndroidQuantityItem> valids = new  ArrayList<AndroidQuantityItem>();
+        for (AndroidQuantityItem i : items) {
+            if (AndroidQuantityString.isValidQuantity(i.quantity)) {
+            	valids.add(i);
+            }
+        }        
+        this.setItems(valids);
     }
     
-    /**
-     * Properties
-     **/
     
-    private ArrayList<AndroidQuantityItem> items;
-    private Iterator<AndroidQuantityItem> itemsItr;
-    private final String[] validQuantities = {
+    /*
+     * Properties
+     **********/
+    
+    private static final String[] validQuantities = {
         "zero", "one", "two", "few", "many", "other"
     };
     
-    /**
+    
+    /*
      * Methods
-     **/
+     **********/
         
-    private boolean isValidQuantity(AndroidQuantityItem itm) {
-        return (Arrays.asList(this.validQuantities).indexOf(itm.quantity) >= 0);
+    public static boolean isValidQuantity(String quantity) {
+        return (Arrays.asList(AndroidQuantityString.validQuantities).indexOf(quantity) >= 0);
     }
+    
+    @Override
     public AndroidQuantityItem nextItem() {          
         if (this.itemsItr.hasNext()) {
-            AndroidQuantityItem it = this.itemsItr.next();
+            AndroidQuantityItem it = (AndroidQuantityItem) this.itemsItr.next();
             return new AndroidQuantityItem(it.quantity, it.value);
         } else {
             return null;
@@ -52,9 +54,9 @@ public class AndroidQuantityString extends AndroidStringBase {
     }
     
     
-    /**
+    /*
      * Classes
-     **/   
+     **********/   
     
     public static class AndroidQuantityItem {
         

@@ -5,10 +5,17 @@
 
 package androidStringXML;
 
-import androidStringResources.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+
 import libs.MyException;
+import androidStringResources.AndroidQuantityString;
+import androidStringResources.AndroidString;
+import androidStringResources.AndroidStringArray;
+import androidStringResources.AndroidStringBase;
+import androidStringResources.IStringResourcesProvider;
 
 
 public class AndroidStringXML {
@@ -16,98 +23,55 @@ public class AndroidStringXML {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public AndroidStringXML() {
         
     }
     
     
-    /**
+    /*
      * Classes
-     **/
+     *********/
     
-    private static class xmlFormat {
-        /**
-         * Properties
-         **/
-        
-        public static final String header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-        public static final String openingTag = "<resources>";
-        public static final String closingTag = "</resources>";
-        public static final String stringTmpl = "<string name=\"%s\">%s</string>";
-        public static final String stringArrayTagTmpl = "<string-array name=\"%s\">%s</string>";
-        public static final String stringArrayItemTmpl = "<item>%s</item>";
-        public static final String quantityStringTagTmpl = "<plurals name=\"%s\">%s</plurals>";
-        public static final String quantityStringItemTmpl = "<item quantity=\"%s\">%s</item>";
-        
-        /**
-         * Methods
-         **/
-        
-        public static String formatString(AndroidString s) {
-            return String.format(xmlFormat.stringTmpl, s.getName(), s.getValue());
-        }
-                
-        public static String formatStringArray(AndroidStringArray sa) {
-                        
-            StringBuilder builder = new StringBuilder();
-            String item;
-            
-            // Format the <item>s elments
-            while ((item = sa.nextItem()) != null) {
-                builder.append(String.format(xmlFormat.stringArrayItemTmpl, item));
-            }
-            
-            // Compose the complete <string-array> element
-            return String.format(xmlFormat.stringArrayTagTmpl, sa.getName(), builder.toString());
-        }
-        
-        public static String formatQuantityString(AndroidQuantityString qs) {
-                         
-            AndroidQuantityString.AndroidQuantityItem item;
-            StringBuilder builder = new StringBuilder();
-            
-            // Format the <item>s elments
-            while ((item = qs.nextItem()) != null) {
-                builder.append(String.format(xmlFormat.quantityStringItemTmpl, item.quantity, item.value));
-            }
-            
-            // Compose the complete <plurals> element
-            return String.format(xmlFormat.quantityStringTagTmpl, builder.toString());
-        }
-                
-    }
-    
-    private class StringResourcesReader {
+    private static class StringResourcesReader {
         
         public StringResourcesReader(IStringResourcesProvider provider) {
             this.provider = provider;
             this.readStringResources();
         }
         
-        
-        /**
-         * Properties
-         **/
+
+        /*
+         * Fields
+         ***********/
         
         private IStringResourcesProvider provider;        
-        private Map<String, String> xmlBody = null;
-        private Map<String, String> nameMap = null;        
+        private Map<String, String> xmlBody = new HashMap<String, String>();
+        private Map<String, ArrayList<String>> nameMap = new HashMap<String, ArrayList<String>>();        
         
-        /**
+        
+        /*
          * Methods
-         **/
-                
-        private int kickoutDulplicateName(String lang, ArrayList<? extends androidStringResources.AndroidStringBase> ls) {
+         **********/
+        
+        private int kickoutDulplicateName(String lang, ArrayList<? extends AndroidStringBase> ls) {
             
             int duplicated = 0;
+            
             String name;
             
-            for (androidStringResources.AndroidStringBase s : ls) {
+            ArrayList<String> names = this.nameMap.get(lang);
+            if (names == null) {
+            // Not yet create the name list for this lang so create one
+            	names = new ArrayList<String>();
+            }
+            
+            
+            for (AndroidStringBase s : ls) {
                 try {
                     
                     name = s.getName();
                     
-                    if (this.nameMap.get(name) != null) {
+                    if (names.indexOf(name) >= 0) {
                         
                         ls.remove(s);
                         duplicated++;
@@ -115,14 +79,16 @@ public class AndroidStringXML {
                     
                     } else {
                         
-                        // Put the 1st-met name in the nameMap so next time we could check the duplicate against it
-                        this.nameMap.put(lang, name);
+                        // Put the 1st-met name in the name list so next time we could check the duplicate against it
+                        names.add(name);
                     }
                     
                 } catch (MyException e) {
                     e.print1stPoint();
                 }
             }
+            
+            this.nameMap.put(lang, names); // Update the name list
             
             return duplicated;
         }
@@ -141,7 +107,7 @@ public class AndroidStringXML {
                 String xml;
                 for (String s : langs) {                    
                     xml = this.readStringsXML(s) + this.readStringArraysXML(s) + this.readQuantityStringsXML(s);
-                    if (xml != "") {
+                    if (!xml.equals("")) {
                         readCount++;
                         this.xmlBody.put(s, xml);
                     }
@@ -157,16 +123,16 @@ public class AndroidStringXML {
         private String readStringsXML(String lang) {
             
             String xml = "";            
-            ArrayList<androidStringResources.AndroidString> list = this.provider.getStrings(lang);
+            ArrayList<AndroidString> list = this.provider.getStrings(lang);
             
             this.kickoutDulplicateName(lang, list);
             
-            if (list != null) {
+            if (list.size() > 0) {
                 
                 StringBuilder sb = new StringBuilder();
                 
-                for (androidStringResources.AndroidString s : list) {
-                    sb.append(xmlFormat.formatString(s));
+                for (AndroidString s : list) {
+                    sb.append(androidStringXMLFormat.formatString(s));
                 }
                 
                 xml = sb.toString();
@@ -178,16 +144,16 @@ public class AndroidStringXML {
         private String readStringArraysXML(String lang) {
             
             String xml = "";            
-            ArrayList<androidStringResources.AndroidStringArray> list = this.provider.getStringArrays(lang);
+            ArrayList<AndroidStringArray> list = this.provider.getStringArrays(lang);
                         
             this.kickoutDulplicateName(lang, list);
             
-            if (list != null) {
+            if (list.size() > 0) {
                 
                 StringBuilder sb = new StringBuilder();
                 
-                for (androidStringResources.AndroidStringArray sa : list) {
-                    sb.append(xmlFormat.formatStringArray(sa));
+                for (AndroidStringArray sa : list) {
+                    sb.append(androidStringXMLFormat.formatStringArray(sa));
                 }
                 
                 xml = sb.toString();
@@ -199,16 +165,16 @@ public class AndroidStringXML {
         private String readQuantityStringsXML(String lang) {
             
             String xml = "";            
-            ArrayList<androidStringResources.AndroidQuantityString> list = this.provider.getQuantityStrings(lang);
+            ArrayList<AndroidQuantityString> list = this.provider.getQuantityStrings(lang);
             
             this.kickoutDulplicateName(lang, list);            
             
-            if (list != null) {
+            if (list.size() > 0) {
                 
                 StringBuilder sb = new StringBuilder();
                 
-                for (androidStringResources.AndroidQuantityString qs : list) {
-                    sb.append(xmlFormat.formatQuantityString(qs));
+                for (AndroidQuantityString qs : list) {
+                    sb.append(androidStringXMLFormat.formatQuantityString(qs));
                 }
                 
                 xml = sb.toString();
@@ -221,7 +187,7 @@ public class AndroidStringXML {
             String xmlBody = this.xmlBody.get(lang);
             return (xmlBody == null) ?
                     null :
-                    xmlFormat.header + xmlFormat.openingTag + xmlBody + xmlFormat.closingTag;                   
+                    androidStringXMLFormat.header + androidStringXMLFormat.openingTag + xmlBody + androidStringXMLFormat.closingTag;                   
         }
     
         public String[] getSupportedLangs() {

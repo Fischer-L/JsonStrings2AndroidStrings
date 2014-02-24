@@ -13,28 +13,20 @@ import java.util.Iterator;
  *
  * @author Fischer_Liu
  */
-public class AndroidStringArray extends AndroidStringBase {
+public class AndroidStringArray extends AndroidStringItemsBase {
     
     public AndroidStringArray(String n, ArrayList<String> its) {
-        super(n);
-        this.items = its;
-        this.itemsItr = this.items.iterator();
+        super(n, its);
     }
     
-    /**
-     * Properties
-     **/
-       
-    private ArrayList<String> items = null;
-    private Iterator<String> itemsItr = null;
-    
-    /**
+    /*
      * Methods
-     **/
-        
+     **********/
+    
+    @Override
     public String nextItem() {
         if (this.itemsItr.hasNext()) {
-            return this.itemsItr.next();
+            return (String) this.itemsItr.next();
         } else {
             return null;
         }
