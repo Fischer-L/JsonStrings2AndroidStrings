@@ -23,7 +23,7 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 
 	@Override
 	public ArrayList<AndroidString> getStrings(String lang) {
-		int i;
+		Integer i;
 		String[] sv = this.getStrValues(lang);
 		
 		ArrayList<AndroidString> sList = new ArrayList<AndroidString>();
@@ -31,7 +31,7 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		for (i = 0; i < 3; i++) {
 			sList.add(new AndroidString(this.stringNames[i], sv[i]));
 			if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
-				sList.add(new AndroidString(this.stringNames[i], sv[i]));
+				sList.add(new AndroidString(this.stringNames[i].toString(), i.toString()));
 			}
 		}
 		
@@ -58,7 +58,7 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		}
 		saList.add(new AndroidStringArray(this.stringArrayNames[1], itmList));
 
-		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
+		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME) && false) {
 			saList.add(new AndroidStringArray(this.stringNames[0], itmList));
 			saList.add(new AndroidStringArray(this.stringArrayNames[0], itmList));
 			saList.add(new AndroidStringArray(this.quantityStringNames[0], itmList));
@@ -78,19 +78,19 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		
 		itmList = new ArrayList<AndroidQuantityItem>();
 		for (i = 0; i < 3; i++) {
-			itm = new AndroidQuantityItem(FakeData.VALID_QUANTITIES[i],sv[i]);
+			itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i],sv[i]);
 			itmList.add(itm);
 		}
 		qsList.add(new AndroidQuantityString(this.quantityStringNames[0], itmList));
 		
 		itmList = new ArrayList<AndroidQuantityItem>();
 		for (i = 3; i < 6; i++) {
-			itm = new AndroidQuantityItem(FakeData.VALID_QUANTITIES[i],sv[i]);
+			itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i],sv[i]);
 			itmList.add(itm);
 		}
 		qsList.add(new AndroidQuantityString(this.quantityStringNames[1], itmList));
 		
-		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
+		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)  && false) {
 			qsList.add(new AndroidQuantityString(this.stringNames[1], itmList));
 			qsList.add(new AndroidQuantityString(this.stringArrayNames[1], itmList));
 			qsList.add(new AndroidQuantityString(this.quantityStringNames[1], itmList));
@@ -177,14 +177,14 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 				   + 			"<item>" + strValues[5] + "</item>"
 				   + 		"</string-array>"
 				   +		"<plurals name=\"" + this.quantityStringNames[0] + "\">"
-				   + 			"<item quantity=\"" + FakeData.VALID_QUANTITIES[0] + "\">" + strValues[0] + "</item>"
-				   + 			"<item quantity=\"" + FakeData.VALID_QUANTITIES[1] + "\">" + strValues[1] + "</item>"
-				   + 			"<item quantity=\"" + FakeData.VALID_QUANTITIES[2] + "\">" + strValues[2] + "</item>"
+				   + 			"<item quantity=\"" + Constants.VALID_QUANTITIES[0] + "\">" + strValues[0] + "</item>"
+				   + 			"<item quantity=\"" + Constants.VALID_QUANTITIES[1] + "\">" + strValues[1] + "</item>"
+				   + 			"<item quantity=\"" + Constants.VALID_QUANTITIES[2] + "\">" + strValues[2] + "</item>"
 				   + 		"</plurals>"
 				   +		"<plurals name=\"" + this.quantityStringNames[1] + "\">"
-				   + 			"<item quantity=\"" + FakeData.VALID_QUANTITIES[3] + "\">" + strValues[3] + "</item>"
-				   + 			"<item quantity=\"" + FakeData.VALID_QUANTITIES[4] + "\">" + strValues[4] + "</item>"
-				   + 			"<item quantity=\"" + FakeData.VALID_QUANTITIES[5] + "\">" + strValues[5] + "</item>"
+				   + 			"<item quantity=\"" + Constants.VALID_QUANTITIES[3] + "\">" + strValues[3] + "</item>"
+				   + 			"<item quantity=\"" + Constants.VALID_QUANTITIES[4] + "\">" + strValues[4] + "</item>"
+				   + 			"<item quantity=\"" + Constants.VALID_QUANTITIES[5] + "\">" + strValues[5] + "</item>"
 				   + 		"</plurals>"
 				   + "</resources>";
 		return xml;

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import libs.FakeData;
+import libs.Constants;
 
 import org.junit.Test;
 
@@ -52,8 +52,8 @@ public class androidStringXMLFormatTest {
 		
 		AndroidQuantityItem itm;
 		ArrayList<AndroidQuantityItem> itms = new ArrayList<AndroidQuantityItem>();
-		for (int i = 0; i < FakeData.VALID_QUANTITIES.length; i++) {
-			itm = new AndroidQuantityItem(FakeData.VALID_QUANTITIES[i], "ITEM_" + Integer.toString(i));
+		for (int i = 0; i < Constants.VALID_QUANTITIES.length; i++) {
+			itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i], "ITEM_" + Integer.toString(i));
 			expected += "<item quantity=\"" + itm.quantity + "\">" + itm.value + "</item>";
 			itms.add(itm);
 		}		
