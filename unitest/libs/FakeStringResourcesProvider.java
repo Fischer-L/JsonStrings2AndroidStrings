@@ -31,9 +31,15 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		for (i = 0; i < 3; i++) {
 			sList.add(new AndroidString(this.stringNames[i], sv[i]));
 			if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
-				sList.add(new AndroidString(this.stringNames[i].toString(), i.toString()));
+				sList.add(new AndroidString(this.stringNames[i], sv[i]));
 			}
 		}
+		
+//		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
+//			for (i = 0; i < 3; i++) {
+//				sList.add(new AndroidString(this.stringNames[i], i.toString()));
+//			}
+//		}
 		
 		return sList;
 	}
@@ -58,10 +64,9 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		}
 		saList.add(new AndroidStringArray(this.stringArrayNames[1], itmList));
 
-		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME) && false) {
+		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
 			saList.add(new AndroidStringArray(this.stringNames[0], itmList));
 			saList.add(new AndroidStringArray(this.stringArrayNames[0], itmList));
-			saList.add(new AndroidStringArray(this.quantityStringNames[0], itmList));
 		}
 		
 		return saList;
@@ -90,7 +95,7 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		}
 		qsList.add(new AndroidQuantityString(this.quantityStringNames[1], itmList));
 		
-		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)  && false) {
+		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME) && false) {
 			qsList.add(new AndroidQuantityString(this.stringNames[1], itmList));
 			qsList.add(new AndroidQuantityString(this.stringArrayNames[1], itmList));
 			qsList.add(new AndroidQuantityString(this.quantityStringNames[1], itmList));
@@ -122,15 +127,15 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		"BMW", "BENZ"
 	};
 	
-	private final String[] strValues = {
+	private String[] strValues = {
 		"Java", "PHP", "C and C++", "Javascript", "SQLite", "HTML5"
 	};
 	
-	private final String[] strValues_ZH = {
+	private String[] strValues_ZH = {
 		"ZH_Java", "ZH_PHP", "ZH_C and C++", "ZH_Javascript", "ZH_SQLite", "ZH_HTML5"
 	};
 	
-	private final String[] strValues_JP = {
+	private String[] strValues_JP = {
 		"JP_Java", "JP_PHP", "JP_C and C++", "JP_Javascript", "JP_SQLite", "JP_HTML5"
 	};
 	

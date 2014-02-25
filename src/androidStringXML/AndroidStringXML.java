@@ -8,7 +8,9 @@ package androidStringXML;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
 
 import libs.MyException;
 import androidStringResources.AndroidQuantityString;
@@ -53,33 +55,35 @@ public class AndroidStringXML {
          * Methods
          **********/
         
-        private ArrayList<? extends AndroidStringBase> kickoutDulplicateName(String lang, ArrayList<? extends AndroidStringBase> ls) {
+        private ArrayList<Object> kickoutDulplicateName(String lang, ArrayList<? extends AndroidStringBase> ls) {
                             
+        	int i;
+        	
         	String name;
             
-            ArrayList<Integer> duplicateds = new ArrayList<Integer>();
+            ArrayList<Object> cleanls = new ArrayList<Object>();
             
             ArrayList<String> names = this.nameMap.get(lang);
             if (names == null) {            
             	names = new ArrayList<String>(); // Not yet create the name list for this lang so create one
             }
             
-            // Collect the indexes of the elements with duplicated name
-            // Notice: we loop through from the arrayList's tail to the head here
-            for (int i = ls.size() - 1; i >= 0; i--) {
+                       
+            // Collect the elements without duplicated name
+            for (i = 0; i < ls.size(); i++) {
                 try {
                     
-                	AndroidStringBase s = ls.get(i);
+                	AndroidStringBase s = (AndroidStringBase) ls.get(i);
                     name = s.getName();
                     
-                    if (names.indexOf(name) >= 0) {
-                        
-                    	duplicateds.add(i);
+                    if (names.indexOf(name) >= 0) {                        
+                    	
                         throw new MyException(String.format("The duplicated android:name=\"%s\" in the %s language", name, lang));
                     
                     } else {                        
                         // Put the 1st-met name in the name list so next time we could check the duplicate against it
                         names.add(name);
+                        cleanls.add((Object) s);
                     }
                     
                 } catch (MyException e) {
@@ -87,19 +91,10 @@ public class AndroidStringXML {
                 }
             	
             }
-                        
-            // Remove the elements with duplicated name
-            // Notice: Above we collect the indexes from the tail so we starting remove from the tail.
-            //         In this way, we can remove the element in the right order
-            if (duplicateds.size() > 0) {
-            	for (Integer i : duplicateds) {
-            		ls.remove(i);
-            	}
-            }
             
             this.nameMap.put(lang, names); // Update the name list
             
-            return ls;
+            return cleanls;
         }
         
         private int readStringResources() {
@@ -114,9 +109,13 @@ public class AndroidStringXML {
                 }
                 
                 String xml;
-                for (String s : langs) {                    
-                    xml = this.readStringsXML(s) + this.readStringArraysXML(s) + this.readQuantityStringsXML(s);
-                    if (!xml.equals("")) {
+                for (String s : langs) {
+                	
+                    xml = this.buildXML(s, this.provider.getStrings(s))
+                    	+ this.buildXML(s, this.provider.getStringArrays(s))
+                    	+ this.buildXML(s, this.provider.getQuantityStrings(s));
+                    
+                     if (!xml.equals("")) {
                         readCount++;
                         this.xmlBody.put(s, xml);
                     }
@@ -129,63 +128,50 @@ public class AndroidStringXML {
             return readCount;
         }
         
-        private String readStringsXML(String lang) {
-            
-            String xml = "";            
-            ArrayList<AndroidString> list =  (ArrayList<AndroidString>) this.kickoutDulplicateName(lang, this.provider.getStrings(lang));
-            
-            if (list.size() > 0) {
-                
-                StringBuilder sb = new StringBuilder();
-                
-                for (AndroidString s : list) {
-                    sb.append(androidStringXMLFormat.formatString(s));
-                }
-                
-                xml = sb.toString();
-            }
-                        
-            return xml;
+        private String buildXML(String lang, ArrayList<? extends AndroidStringBase> ls) {
+        	
+        	String xml = ""; 
+        	ArrayList<Object> list = this.kickoutDulplicateName(lang, ls);
+        	
+        	if (list.size() > 0) {
+        		
+        		Class targetCls;
+        		StringBuilder sb = new StringBuilder();
+        		
+        		try {
+        		
+	        		for (Object o : list) {
+	        			
+	        			targetCls = o.getClass();
+	        			
+	        			if (targetCls == AndroidString.class) {	
+	        				
+	        				sb.append(androidStringXMLFormat.formatString((AndroidString) o));
+	        				
+	        			} else if (targetCls == AndroidStringArray.class) {	
+	        				
+	        				sb.append(androidStringXMLFormat.formatStringArray((AndroidStringArray) o));
+	        				
+	        			} else if (targetCls == AndroidQuantityString.class) {
+	        				
+	        				sb.append(androidStringXMLFormat.formatQuantityString((AndroidQuantityString) o));
+	        				
+	        			} else {
+	        				throw new MyException("Unknown resouce class : " + targetCls.toString());
+	        			}
+	        		}
+	        		
+	        		xml = sb.toString();
+        		
+        		} catch (MyException e) {
+        			e.print1stPoint();
+        		}
+        		
+        	}
+        	
+        	return xml;
         }
-        
-        private String readStringArraysXML(String lang) {
             
-            String xml = "";            
-            ArrayList<AndroidStringArray> list = (ArrayList<AndroidStringArray>) this.kickoutDulplicateName(lang, this.provider.getStringArrays(lang));
-            
-            if (list.size() > 0) {
-                
-                StringBuilder sb = new StringBuilder();
-                
-                for (AndroidStringArray sa : list) {
-                    sb.append(androidStringXMLFormat.formatStringArray(sa));
-                }
-                
-                xml = sb.toString();
-            }
-                        
-            return xml;
-        }
-        
-        private String readQuantityStringsXML(String lang) {
-            
-            String xml = "";            
-            ArrayList<AndroidQuantityString> list = (ArrayList<AndroidQuantityString>) this.kickoutDulplicateName(lang, this.provider.getQuantityStrings(lang));
-            
-            if (list.size() > 0) {
-                
-                StringBuilder sb = new StringBuilder();
-                
-                for (AndroidQuantityString qs : list) {
-                    sb.append(androidStringXMLFormat.formatQuantityString(qs));
-                }
-                
-                xml = sb.toString();
-            }
-                        
-            return xml;
-        }
-    
         public String getXML(String lang) {
             String xmlBody = this.xmlBody.get(lang);
             return (xmlBody == null) ?
