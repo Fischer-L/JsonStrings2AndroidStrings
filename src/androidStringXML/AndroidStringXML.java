@@ -53,32 +53,31 @@ public class AndroidStringXML {
          * Methods
          **********/
         
-        private int kickoutDulplicateName(String lang, ArrayList<? extends AndroidStringBase> ls) {
+        private ArrayList<? extends AndroidStringBase> kickoutDulplicateName(String lang, ArrayList<? extends AndroidStringBase> ls) {
+                            
+        	String name;
             
-            int duplicated = 0;
-            
-            String name;
+            ArrayList<Integer> duplicateds = new ArrayList<Integer>();
             
             ArrayList<String> names = this.nameMap.get(lang);
-            if (names == null) {
-            // Not yet create the name list for this lang so create one
-            	names = new ArrayList<String>();
+            if (names == null) {            
+            	names = new ArrayList<String>(); // Not yet create the name list for this lang so create one
             }
             
-            
-            for (AndroidStringBase s : ls) {
+            // Collect the indexes of the elements with duplicated name
+            // Notice: we loop through from the arrayList's tail to the head here
+            for (int i = ls.size() - 1; i >= 0; i--) {
                 try {
                     
+                	AndroidStringBase s = ls.get(i);
                     name = s.getName();
                     
                     if (names.indexOf(name) >= 0) {
                         
-                        ls.remove(s);
-                        duplicated++;
+                    	duplicateds.add(i);
                         throw new MyException(String.format("The duplicated android:name=\"%s\" in the %s language", name, lang));
                     
-                    } else {
-                        
+                    } else {                        
                         // Put the 1st-met name in the name list so next time we could check the duplicate against it
                         names.add(name);
                     }
@@ -86,11 +85,21 @@ public class AndroidStringXML {
                 } catch (MyException e) {
                     e.print1stPoint();
                 }
+            	
+            }
+                        
+            // Remove the elements with duplicated name
+            // Notice: Above we collect the indexes from the tail so we starting remove from the tail.
+            //         In this way, we can remove the element in the right order
+            if (duplicateds.size() > 0) {
+            	for (Integer i : duplicateds) {
+            		ls.remove(i);
+            	}
             }
             
             this.nameMap.put(lang, names); // Update the name list
             
-            return duplicated;
+            return ls;
         }
         
         private int readStringResources() {
@@ -123,9 +132,7 @@ public class AndroidStringXML {
         private String readStringsXML(String lang) {
             
             String xml = "";            
-            ArrayList<AndroidString> list = this.provider.getStrings(lang);
-            
-            this.kickoutDulplicateName(lang, list);
+            ArrayList<AndroidString> list =  (ArrayList<AndroidString>) this.kickoutDulplicateName(lang, this.provider.getStrings(lang));
             
             if (list.size() > 0) {
                 
@@ -144,9 +151,7 @@ public class AndroidStringXML {
         private String readStringArraysXML(String lang) {
             
             String xml = "";            
-            ArrayList<AndroidStringArray> list = this.provider.getStringArrays(lang);
-                        
-            this.kickoutDulplicateName(lang, list);
+            ArrayList<AndroidStringArray> list = (ArrayList<AndroidStringArray>) this.kickoutDulplicateName(lang, this.provider.getStringArrays(lang));
             
             if (list.size() > 0) {
                 
@@ -165,9 +170,7 @@ public class AndroidStringXML {
         private String readQuantityStringsXML(String lang) {
             
             String xml = "";            
-            ArrayList<AndroidQuantityString> list = this.provider.getQuantityStrings(lang);
-            
-            this.kickoutDulplicateName(lang, list);            
+            ArrayList<AndroidQuantityString> list = (ArrayList<AndroidQuantityString>) this.kickoutDulplicateName(lang, this.provider.getQuantityStrings(lang));
             
             if (list.size() > 0) {
                 
