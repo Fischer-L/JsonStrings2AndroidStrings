@@ -1,6 +1,6 @@
 package libs;
 
-public class FakeData {
+public class Constants {
 	
 	public static final String[] VALID_QUANTITIES = {
         "zero", "one", "two", "few", "many", "other"

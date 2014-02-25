@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-import libs.FakeData;
+import libs.Constants;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -59,7 +59,7 @@ public class AndroidQuantityStringTest {
 	 **********/
 
 	private String NAME = "programming_lang";
-    private final String[] VALID_QUANTITIES = FakeData.VALID_QUANTITIES;
-	private String[] ITMES = FakeData.STRING_VALUES;
+    private final String[] VALID_QUANTITIES = Constants.VALID_QUANTITIES;
+	private String[] ITMES = Constants.STRING_VALUES;
 	private ArrayList<AndroidQuantityString.AndroidQuantityItem> items;
 }

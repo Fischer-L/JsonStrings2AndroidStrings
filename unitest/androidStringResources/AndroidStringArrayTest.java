@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import junit.framework.Assert;
-import libs.FakeData;
+import libs.Constants;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -42,6 +42,6 @@ public class AndroidStringArrayTest {
 	 ***********/
 	
 	private String NAME = "programming_lang";
-	private String[] ITMES = FakeData.STRING_VALUES;
+	private String[] ITMES = Constants.STRING_VALUES;
 	private ArrayList<String> items;
 }
