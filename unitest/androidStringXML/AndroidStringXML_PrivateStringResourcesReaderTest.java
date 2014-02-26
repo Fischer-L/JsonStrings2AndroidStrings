@@ -1,8 +1,6 @@
 package androidStringXML;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +33,7 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 			IStringResourcesProvider.class
 		};
 		this.testCls = Class.forName("androidStringXML.AndroidStringXML$StringResourcesReader");
-		this.testClsConstructor = testCls.getConstructor(params);
+		this.testClsConstructor = this.testCls.getConstructor(params);
 	}
 
 	@After

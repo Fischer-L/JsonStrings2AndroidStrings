@@ -5,14 +5,16 @@
 
 package androidStringXML;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-
 import libs.MyException;
+import libs.Utility;
 import androidStringResources.AndroidQuantityString;
 import androidStringResources.AndroidString;
 import androidStringResources.AndroidStringArray;
@@ -184,7 +186,59 @@ public class AndroidStringXML {
         }
     }
     
-    private class StringResourcesWriter {
-        
+    private static class StringResourcesWriter {
+    	
+    	public StringResourcesWriter() {}
+    	
+    	/*
+    	 * Methods
+    	 **********/
+    	
+    	public void writeXML(String dstPath, String xml) {
+    		
+    		// Open the file
+// TO DEL
+//    		File f = new File(dstPath);
+//    		if (!f.exists()) {
+//    			
+//    			try {    				
+//    				if (!f.getParentFile().mkdirs()) {
+//    					throw new MyException("Fail to make the dirs for the file path" + dstPath + "!");
+//    				}
+//    			} catch(MyException e) {
+//    				e.print1stPoint();
+//    				return;
+//    			}
+//    			
+//    			try {
+//    				f.createNewFile();
+//    			} catch (IOException e) {
+//    				(new MyException("Fail to create to the file:" + dstPath + "!")).print1stPoint();
+//    				return;
+//    			}
+//    		}
+//    		
+//    		f.setReadable(true, false);
+//    		f.setWritable(false, false);
+    		
+    		// Create the buffer for writing
+    		
+// TO DEL
+//    		try {
+//				bw = new BufferedWriter(new FileWriter(f));
+//			} catch (IOException e) {
+//				(new MyException("Fail to create the BufferedWriter instance!")).print1stPoint();
+//				return;
+//			}
+    		
+    		// Write the xml to the file
+    		try {
+    			BufferedWriter bw = Utility.Files.bufferFileWriter(Utility.Files.openFile(dstPath, true, true, false, false));
+				bw.write(xml);
+				bw.close();
+			} catch (Exception e) {
+				(new MyException("Fail to write to the file:" + dstPath + "!")).print1stPoint();
+			}
+    	}
     }
 }
