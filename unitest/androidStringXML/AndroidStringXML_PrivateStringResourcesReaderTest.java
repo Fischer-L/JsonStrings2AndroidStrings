@@ -45,7 +45,6 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 		// Too simple to test. The tests on the getXML method will test this btw so not testing here.
 	}
 	
-	//@Ignore
 	@Test
 	public void testGetXML() {
 		

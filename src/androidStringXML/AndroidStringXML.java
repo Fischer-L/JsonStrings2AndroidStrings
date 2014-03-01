@@ -24,11 +24,98 @@ import androidStringResources.IStringResourcesProvider;
 
 public class AndroidStringXML {
 
-    /**
-     * @param args the command line arguments
-     */
-    public AndroidStringXML() {
-        
+    public AndroidStringXML() {        
+    }
+    
+    public AndroidStringXML(String resRootDir, IStringResourcesProvider resProvider) {
+    	this.setResRootDir(resRootDir);
+    	this.setResProvider(resProvider);
+    }
+    
+    
+    /*
+     * Fields
+     *********/
+    
+    private String resRootDir = null;
+    private IStringResourcesProvider resProvider = null;
+    
+    
+    /*
+     * Methods 
+     **********/
+    
+    public void setResRootDir(String resRootDir) {
+    	this.resRootDir = resRootDir;
+    }
+    
+    public void setResProvider(IStringResourcesProvider resProvider) {
+    	this.resProvider = resProvider;
+    }
+    
+    public void generateXMLs() {
+    	
+    	AndroidStringXML.StringResourcesReader resReader = new AndroidStringXML.StringResourcesReader(this.resProvider);
+    	
+    	try {
+
+	    	String[] langs = resReader.getSupportedLangs();	
+	    	if (langs.length > 0) {	    		
+
+	    		String xmlBody = null;
+	    		String xmlName = "strings.xml";
+		    	AndroidStringXML.StringResourcesWriter resWriter = new AndroidStringXML.StringResourcesWriter();
+	    		
+		    	// Generate strings.xml files for all supported languages
+	    		for (int i = 0; i < langs.length; i++) {
+	    			
+	    			xmlBody = resReader.getXML(langs[i]);
+	    			
+	    			try {
+		    			if (xmlBody != null) {
+			    			resWriter.writeXML(this.resRootDir + "/values-" + langs[i] + "/" + xmlName, xmlBody);
+		    			} else {
+		    				throw new MyException("No string resouces for the language, " + langs[i] + ", unable to generate the strings.xml!");
+		    			}
+	    			} catch (MyException e) {
+	    	    		e.print1stPoint();
+	    	    	}
+	    		}
+	    		
+	    		// Generate strings.xml files for default language 			
+    			try {
+    	    		
+    				xmlBody = resReader.getXML(resReader.getDefaultLang());
+    				
+    				// Try to use the 1st-met language string resource as the fallback resource.
+	    			if (xmlBody == null) {	    				
+	    				for (int i = 0; i < langs.length; i++) {
+	    					xmlBody = resReader.getXML(langs[i]);
+	    					if (xmlBody != null) {
+	    						throw new MyException("No string resouces for the default language, " + resReader.getDefaultLang() + ", take the langauge resources, " + langs[i] + ", as the fallback!");
+	    					}
+	    				}	    				
+	    				throw new MyException("No string resouces for the default language, " + resReader.getDefaultLang() + ", unable to generate the strings.xml!");
+	    			}
+	    			
+    			} catch (MyException e) {
+    				
+    	    		e.print1stPoint();
+    	    		
+    	    	} finally {
+    	    		
+    	    		if (xmlBody != null) {
+    	    			resWriter.writeXML(this.resRootDir + "/values/" + xmlName, xmlBody);
+    	    		}
+    	    	}
+	    		
+	    	} else {
+	    		throw new MyException("The string resources have no supported language(s)! Unable to proceed!");
+	    	}   
+	    	
+    	} catch (MyException e) {
+    		e.print1stPoint();
+    	}
     }
     
     
@@ -69,7 +156,6 @@ public class AndroidStringXML {
             if (names == null) {            
             	names = new ArrayList<String>(); // Not yet create the name list for this lang so create one
             }
-            
                        
             // Collect the elements without duplicated name
             for (i = 0; i < ls.size(); i++) {
@@ -174,63 +260,28 @@ public class AndroidStringXML {
         	return xml;
         }
             
-        public String getXML(String lang) {
-            String xmlBody = this.xmlBody.get(lang);
+        public String getXML(String lang) {            
+        	String xmlBody = this.xmlBody.get(lang);            
             return (xmlBody == null) ?
                     null :
                     androidStringXMLFormat.header + androidStringXMLFormat.openingTag + xmlBody + androidStringXMLFormat.closingTag;                   
         }
     
+        public String getDefaultLang() {
+        	return this.provider.getDefaultLang();
+        }
+        
         public String[] getSupportedLangs() {
             return this.provider.getSupportedLangs();
         }
     }
     
     private static class StringResourcesWriter {
-    	
-    	public StringResourcesWriter() {}
-    	
     	/*
     	 * Methods
     	 **********/
     	
-    	public void writeXML(String dstPath, String xml) {
-    		
-    		// Open the file
-// TO DEL
-//    		File f = new File(dstPath);
-//    		if (!f.exists()) {
-//    			
-//    			try {    				
-//    				if (!f.getParentFile().mkdirs()) {
-//    					throw new MyException("Fail to make the dirs for the file path" + dstPath + "!");
-//    				}
-//    			} catch(MyException e) {
-//    				e.print1stPoint();
-//    				return;
-//    			}
-//    			
-//    			try {
-//    				f.createNewFile();
-//    			} catch (IOException e) {
-//    				(new MyException("Fail to create to the file:" + dstPath + "!")).print1stPoint();
-//    				return;
-//    			}
-//    		}
-//    		
-//    		f.setReadable(true, false);
-//    		f.setWritable(false, false);
-    		
-    		// Create the buffer for writing
-    		
-// TO DEL
-//    		try {
-//				bw = new BufferedWriter(new FileWriter(f));
-//			} catch (IOException e) {
-//				(new MyException("Fail to create the BufferedWriter instance!")).print1stPoint();
-//				return;
-//			}
-    		
+    	public void writeXML(String dstPath, String xml) {    		
     		// Write the xml to the file
     		try {
     			BufferedWriter bw = Utility.Files.bufferFileWriter(Utility.Files.openFile(dstPath, true, true, false, false));
