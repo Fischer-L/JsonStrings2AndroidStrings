@@ -4,10 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import libs.Constants;
-
 import org.junit.Test;
 
+import unitestLibs.Constants;
 import androidStringResources.AndroidQuantityString;
 import androidStringResources.AndroidQuantityString.AndroidQuantityItem;
 import androidStringResources.AndroidString;

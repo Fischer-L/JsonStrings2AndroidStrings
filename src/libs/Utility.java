@@ -7,38 +7,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.NoSuchFileException;
 
 public class Utility {
 	public static class Files {
 		
-		public static File openFile(String dstPath, Boolean readable, Boolean writable, Boolean executable, Boolean ownerOnly) {
-    		// Open the file
-    		File f = new File(dstPath);
-    		if (!f.exists()) {
-    			
-    			try {    				
-    				if (!f.getParentFile().mkdirs()) {
-    					throw new MyException("Fail to make the dirs for the file path" + dstPath + "!");
-    				}
-    			} catch(MyException e) {
-    				e.print1stPoint();
-    				return null;
-    			}
-    			
-    			try {
-    				f.createNewFile();
-    			} catch (IOException e) {
-    				(new MyException("Fail to create to the file:" + dstPath + "!")).print1stPoint();
-    				return null;
-    			}
-    		}
-    		
-    		f.setReadable(readable, ownerOnly);
-    		f.setWritable(writable, ownerOnly);
-    		f.setExecutable(executable, ownerOnly);
-    		
-    		return f;
-		}
+		/*
+		 * Methods
+		 **********/
 		
 		public static BufferedWriter bufferFileWriter(File f) {
     		try {
@@ -60,6 +37,34 @@ public class Utility {
 			}
 		}
 		
+		public static File openFile(String dstPath, Boolean readable, Boolean writable, Boolean executable, Boolean ownerOnly) {
+    		// Open the file
+    		File f = new File(dstPath);
+    		if (!f.exists()) {
+    			
+    			try {    				
+    				if (!f.getParentFile().mkdirs()) {
+    					throw new MyException("Fail to make the dirs for the file path: " + dstPath + "!");
+    				}
+    			} catch(MyException e) {
+    				e.print1stPoint();
+    				return null;
+    			}
+    			
+    			try {
+    				f.createNewFile();
+    			} catch (IOException e) {
+    				(new MyException("Fail to create to the file:" + dstPath + "!")).print1stPoint();
+    				return null;
+    			}
+    		}
+    		
+    		f.setReadable(readable, ownerOnly);
+    		f.setWritable(writable, ownerOnly);
+    		f.setExecutable(executable, ownerOnly);
+    		
+    		return f;
+		}
 		
 		public static String readFileAll(File f) {
 						
@@ -90,6 +95,55 @@ public class Utility {
 			}
 			
 			return s;			
+		}
+	
+		public static void deleteAll(File f) {
+			
+			if (f.isDirectory()) {
+				
+	    		// directory is empty, then delete it
+	    		if(f.list().length==0){
+	 
+	    		   f.delete();
+	 
+	    		}else{
+	 
+	    		   // list all the directory contents
+	        	   String files[] = f.list();
+	 
+	        	   for (String temp : files) {
+	        	      // construct the file structure
+	        	      File fileDelete = new File(f, temp);
+	 
+	        	      // recursive delete
+	        	      Utility.Files.deleteAll(fileDelete);
+	        	   }
+	 
+	        	   // check the directory again, if empty then delete it
+	        	   if(f.list().length==0){
+	           	     f.delete();
+	        	   }
+	    		}			
+				
+			} else {
+				
+				f.delete();					
+			}
+		}
+	
+		public static void deleteAll(String path) {
+			
+    		File f = new File(path);    		
+    		
+    		try {    			
+    			if (f.exists()) {
+    				Utility.Files.deleteAll(f);
+    			} else {
+    				throw new MyException(path + " -> No such file or dir to delete!");
+    			}    			
+    		} catch (MyException e) {
+    			e.print1stPoint();
+    		}
 		}
 	}
 }

@@ -1,12 +1,11 @@
 package androidStringXML;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import libs.FakeStringResourcesProvider;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import unitestLibs.FakeStringResourcesProvider;
 import androidStringResources.IStringResourcesProvider;
 
 public class AndroidStringXML_PrivateStringResourcesReaderTest {
