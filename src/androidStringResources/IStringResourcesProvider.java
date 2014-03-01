@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 /*
  */
-public interface IStringResourcesProvider {      
+public interface IStringResourcesProvider {
+	public String getDefaultLang();
     public String[] getSupportedLangs();
     public ArrayList<androidStringResources.AndroidString> getStrings(String lang);
     public ArrayList<androidStringResources.AndroidStringArray> getStringArrays(String lang);

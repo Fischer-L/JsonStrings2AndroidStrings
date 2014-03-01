@@ -16,7 +16,12 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	public FakeStringResourcesProvider(String testCase) {
 		this.testCase = testCase;
 	}
-		
+	
+	@Override
+	public String getDefaultLang() {
+		return this.supportedLangs[0];
+	}
+	
 	@Override
 	public String[] getSupportedLangs() {
 		return this.supportedLangs;
