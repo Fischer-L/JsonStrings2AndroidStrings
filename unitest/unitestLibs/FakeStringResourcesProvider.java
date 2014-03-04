@@ -13,9 +13,10 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	
 	public FakeStringResourcesProvider() {}
 	
-	public FakeStringResourcesProvider(String testCase) {
-		this.testCase = testCase;
-	}
+	// To delete
+//	public FakeStringResourcesProvider(String testCase) {
+//		this.testCase = testCase;
+//	}
 	
 	@Override
 	public String getDefaultLang() {
@@ -34,19 +35,12 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		
 		ArrayList<AndroidString> sList = new ArrayList<AndroidString>();
 		
-		for (i = 0; i < 3; i++) {
-			sList.add(new AndroidString(this.stringNames[i], sv[i]));
-			if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
+		if (sv != null) {		
+			for (i = 0; i < 3; i++) {
 				sList.add(new AndroidString(this.stringNames[i], sv[i]));
 			}
 		}
-		
-//		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
-//			for (i = 0; i < 3; i++) {
-//				sList.add(new AndroidString(this.stringNames[i], i.toString()));
-//			}
-//		}
-		
+				
 		return sList;
 	}
 
@@ -54,25 +48,22 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	public ArrayList<AndroidStringArray> getStringArrays(String lang) {
 		int i;
 		String[] sv = this.getStrValues(lang);
-		
-		ArrayList<String> itmList;
 		ArrayList<AndroidStringArray> saList = new ArrayList<AndroidStringArray>();
 		
-		itmList = new ArrayList<String>();
-		for (i = 0; i < 3; i++) {
-			itmList.add(sv[i]);
-		}
-		saList.add(new AndroidStringArray(this.stringArrayNames[0], itmList));
-		
-		itmList = new ArrayList<String>();
-		for (i = 3; i < 6; i++) {
-			itmList.add(sv[i]);
-		}
-		saList.add(new AndroidStringArray(this.stringArrayNames[1], itmList));
-
-		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME)) {
-			saList.add(new AndroidStringArray(this.stringNames[0], itmList));
+		if (sv != null) {
+			ArrayList<String> itmList;
+			
+			itmList = new ArrayList<String>();
+			for (i = 0; i < 3; i++) {
+				itmList.add(sv[i]);
+			}
 			saList.add(new AndroidStringArray(this.stringArrayNames[0], itmList));
+			
+			itmList = new ArrayList<String>();
+			for (i = 3; i < 6; i++) {
+				itmList.add(sv[i]);
+			}
+			saList.add(new AndroidStringArray(this.stringArrayNames[1], itmList));
 		}
 		
 		return saList;
@@ -87,25 +78,21 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 		ArrayList<AndroidQuantityItem> itmList;
 		ArrayList<AndroidQuantityString> qsList = new ArrayList<AndroidQuantityString>();
 		
-		itmList = new ArrayList<AndroidQuantityItem>();
-		for (i = 0; i < 3; i++) {
-			itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i],sv[i]);
-			itmList.add(itm);
-		}
-		qsList.add(new AndroidQuantityString(this.quantityStringNames[0], itmList));
-		
-		itmList = new ArrayList<AndroidQuantityItem>();
-		for (i = 3; i < 6; i++) {
-			itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i],sv[i]);
-			itmList.add(itm);
-		}
-		qsList.add(new AndroidQuantityString(this.quantityStringNames[1], itmList));
-		
-		if (this.testCase.equals(FakeStringResourcesProvider.TEST_DOUBLE_NAME) && false) {
-			qsList.add(new AndroidQuantityString(this.stringNames[1], itmList));
-			qsList.add(new AndroidQuantityString(this.stringArrayNames[1], itmList));
+		if (sv != null) {
+			itmList = new ArrayList<AndroidQuantityItem>();
+			for (i = 0; i < 3; i++) {
+				itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i],sv[i]);
+				itmList.add(itm);
+			}
+			qsList.add(new AndroidQuantityString(this.quantityStringNames[0], itmList));
+			
+			itmList = new ArrayList<AndroidQuantityItem>();
+			for (i = 3; i < 6; i++) {
+				itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i],sv[i]);
+				itmList.add(itm);
+			}
 			qsList.add(new AndroidQuantityString(this.quantityStringNames[1], itmList));
-		}	
+		}
 		
 		return qsList;
 	}
@@ -114,35 +101,36 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	/*
 	 * Assistive fields for testing
 	 **********/
-	public static final String TEST_DOUBLE_NAME = "TEST_DOUBLE_NAME";
-	private String testCase = "";
+// To delete 
+//	public static final String TEST_DOUBLE_NAME = "TEST_DOUBLE_NAME";
+//	private String testCase = "";
 	
 	private String[] supportedLangs = {
 		"en", "zh", "jp"
 	};
 	
-	private String[] stringNames = {
-		"Google", "Mozilla", "Facebook"	
-	};
-	
-	private String[] stringArrayNames = {
-		"Apple", "Samsung"
-	};
-	
-	private String[] quantityStringNames = {
-		"BMW", "BENZ"
-	};
-	
-	private String[] strValues = {
+	protected String[] strValues = {
 		"Java", "PHP", "C and C++", "Javascript", "SQLite", "HTML5"
 	};
 	
-	private String[] strValues_ZH = {
+	protected String[] strValues_ZH = {
 		"ZH_Java", "ZH_PHP", "ZH_C and C++", "ZH_Javascript", "ZH_SQLite", "ZH_HTML5"
 	};
 	
-	private String[] strValues_JP = {
+	protected String[] strValues_JP = {
 		"JP_Java", "JP_PHP", "JP_C and C++", "JP_Javascript", "JP_SQLite", "JP_HTML5"
+	};
+	
+	protected String[] stringNames = {
+		"Google", "Mozilla", "Facebook"	
+	};
+	
+	protected String[] stringArrayNames = {
+		"Apple", "Samsung"
+	};
+	
+	protected String[] quantityStringNames = {
+		"BMW", "BENZ"
 	};
 	
 	
@@ -150,7 +138,7 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	 * Assistive Methods for testing
 	 **********/
 	
-	private String[] getStrValues(String lang) {
+	protected String[] getStrValues(String lang) {
 	    
 	    final String[] strValues = lang.equals(this.supportedLangs[0]) ?
 	    						   this.strValues : lang.equals(this.supportedLangs[1]) ?
@@ -168,7 +156,7 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	    return strValues;
 	}
 	
-	public final String getXML(String lang) {
+	public String getExpectedXML(String lang) {
 		
 		String[] strValues = this.getStrValues(lang);
 		
@@ -200,7 +188,6 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 				   + "</resources>";
 		return xml;
 	}
-
 
 
 }

@@ -6,26 +6,21 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import unitestLibs.Constants;
 import unitestLibs.FakeStringResourcesProvider;
+import androidStringResources.AndroidQuantityString;
+import androidStringResources.AndroidString;
+import androidStringResources.AndroidStringArray;
 import androidStringResources.IStringResourcesProvider;
+import androidStringResources.AndroidQuantityString.AndroidQuantityItem;
 
 public class AndroidStringXML_PrivateStringResourcesReaderTest {
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -36,10 +31,6 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 		this.testClsConstructor = this.testCls.getConstructor(params);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Ignore
 	public void testGetSupportedLangs() {
 		// Too simple to test. The tests on the getXML method will test this btw so not testing here.
@@ -48,7 +39,7 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 	@Test
 	public void testGetXML() {
 		
-		FakeStringResourcesProvider fakeProvider = new FakeStringResourcesProvider();
+		FakeProvider fakeProvider = new FakeProvider();
 		
 		// New the test obj
 		Object[] args = { fakeProvider };
@@ -64,7 +55,7 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 			try {
 				
 				args[0] = lang;
-				assertEquals(fakeProvider.getXML(lang), getXML.invoke(testObj, args));
+				assertEquals(fakeProvider.getExpectedXML(lang), getXML.invoke(testObj, args));
 				
 			} catch (IllegalAccessException
 					 | IllegalArgumentException
@@ -80,7 +71,7 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 	@Test
 	public void testGetXML_withDuplicatedNames() {
 		
-		FakeStringResourcesProvider fakeProvider = new FakeStringResourcesProvider(FakeStringResourcesProvider.TEST_DOUBLE_NAME);
+		FakeProvider fakeProvider = new FakeProvider(FakeProvider.TEST_DOUBLE_NAME);
 		
 		// New the test obj
 		Object[] args = { fakeProvider };
@@ -96,7 +87,7 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 			try {
 				
 				args[0] = lang;
-				assertEquals(fakeProvider.getXML(lang), getXML.invoke(testObj, args));
+				assertEquals(fakeProvider.getExpectedXML(lang), getXML.invoke(testObj, args));
 				
 			} catch (IllegalAccessException
 					 | IllegalArgumentException
@@ -156,5 +147,85 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 		}
 		
 		return method;
+	}
+
+
+	/*
+	 * Assistive classes
+	 **********/
+	
+	private static class FakeProvider extends FakeStringResourcesProvider {
+		
+		public FakeProvider() {
+			super();
+		}
+		
+		public FakeProvider(String testCase) {
+			this.testCase = testCase;
+		}
+
+		@Override
+		public ArrayList<AndroidString> getStrings(String lang) {
+			Integer i;
+			String[] sv = this.getStrValues(lang);
+			
+			ArrayList<AndroidString> sList = new ArrayList<AndroidString>();
+			
+			for (i = 0; i < 3; i++) {
+				sList.add(new AndroidString(this.stringNames[i], sv[i]));
+				if (this.testCase.equals(FakeProvider.TEST_DOUBLE_NAME)) {
+					sList.add(new AndroidString(this.stringNames[i], sv[i]));
+				}
+			}
+					
+			return sList;
+		}
+
+		@Override
+		public ArrayList<AndroidStringArray> getStringArrays(String lang) {
+
+			ArrayList<AndroidStringArray> saList = super.getStringArrays(lang);
+			
+			if (this.testCase.equals(FakeProvider.TEST_DOUBLE_NAME)) {
+				String[] sv = this.getStrValues(lang);
+				ArrayList<String> itmList = new ArrayList<String>();
+				for (int i = 3; i < 6; i++) {
+					itmList.add(sv[i]);
+				}
+				saList.add(new AndroidStringArray(this.stringNames[0], itmList));
+				saList.add(new AndroidStringArray(this.stringArrayNames[0], itmList));
+			}
+			
+			return saList;
+		}
+
+		@Override
+		public ArrayList<AndroidQuantityString> getQuantityStrings(String lang) {
+			
+			ArrayList<AndroidQuantityString> qsList = super.getQuantityStrings(lang);
+			
+			if (this.testCase.equals(FakeProvider.TEST_DOUBLE_NAME)) {
+				AndroidQuantityItem itm;
+				String[] sv = this.getStrValues(lang);
+				ArrayList<AndroidQuantityItem> itmList = new ArrayList<AndroidQuantityItem>();
+				for (int i = 3; i < 6; i++) {
+					itm = new AndroidQuantityItem(Constants.VALID_QUANTITIES[i],sv[i]);
+					itmList.add(itm);
+				}
+				qsList.add(new AndroidQuantityString(this.stringNames[1], itmList));
+				qsList.add(new AndroidQuantityString(this.stringArrayNames[1], itmList));
+				qsList.add(new AndroidQuantityString(this.quantityStringNames[1], itmList));
+			}	
+			
+			return qsList;
+		}
+		
+		
+		/*
+		 * Assistive fields
+		 **********/
+		public static final String TEST_DOUBLE_NAME = "TEST_DOUBLE_NAME";
+		private String testCase = "";
+
 	}
 }
