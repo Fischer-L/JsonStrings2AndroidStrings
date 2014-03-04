@@ -30,6 +30,7 @@ public class AndroidStringArray extends AndroidStringItemsBase {
     
     /**
      * Get the next string value
+     * 
      * @return
      * 		- If there are items: the next string value
      * 		<br/>

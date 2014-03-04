@@ -36,6 +36,7 @@ public class AndroidString extends AndroidStringBase {
     
     /**
      * Get the string value of this string element
+     * 
      * @return
      * 		The string value of this string element
      */
