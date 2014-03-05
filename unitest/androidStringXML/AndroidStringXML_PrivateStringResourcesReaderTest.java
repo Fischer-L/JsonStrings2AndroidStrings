@@ -165,19 +165,17 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 		}
 
 		@Override
-		public ArrayList<AndroidString> getStrings(String lang) {
-			Integer i;
-			String[] sv = this.getStrValues(lang);
+		public ArrayList<AndroidString> getStrings(String lang) {	
 			
-			ArrayList<AndroidString> sList = new ArrayList<AndroidString>();
+			ArrayList<AndroidString> sList = super.getStrings(lang);
 			
-			for (i = 0; i < 3; i++) {
-				sList.add(new AndroidString(this.stringNames[i], sv[i]));
-				if (this.testCase.equals(FakeProvider.TEST_DOUBLE_NAME)) {
-					sList.add(new AndroidString(this.stringNames[i], sv[i]));
+			if (this.testCase.equals(FakeProvider.TEST_DOUBLE_NAME)) {
+				Integer i;
+				for (i = sList.size() - 1; i >= 0 ; i--) {
+					sList.add(new AndroidString(sList.get(i).getName(), i.toString()));
 				}
 			}
-					
+			
 			return sList;
 		}
 

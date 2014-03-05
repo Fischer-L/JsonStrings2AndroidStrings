@@ -12,12 +12,7 @@ import androidStringResources.IStringResourcesProvider;
 public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	
 	public FakeStringResourcesProvider() {}
-	
-	// To delete
-//	public FakeStringResourcesProvider(String testCase) {
-//		this.testCase = testCase;
-//	}
-	
+		
 	@Override
 	public String getDefaultLang() {
 		return this.supportedLangs[0];
@@ -101,9 +96,6 @@ public class FakeStringResourcesProvider implements IStringResourcesProvider {
 	/*
 	 * Assistive fields for testing
 	 **********/
-// To delete 
-//	public static final String TEST_DOUBLE_NAME = "TEST_DOUBLE_NAME";
-//	private String testCase = "";
 	
 	private String[] supportedLangs = {
 		"en", "zh", "jp"
