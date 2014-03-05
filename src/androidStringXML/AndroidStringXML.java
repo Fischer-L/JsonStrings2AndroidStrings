@@ -1,14 +1,6 @@
-/**
- *
- * @author Fischer_Liu
- */
-
 package androidStringXML;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +13,20 @@ import androidStringResources.AndroidStringArray;
 import androidStringResources.AndroidStringBase;
 import androidStringResources.IStringResourcesProvider;
 
-
+/**
+ * The class in charge of generating strings.xml files in various languages directories.
+ */
 public class AndroidStringXML {
 
     public AndroidStringXML() {        
     }
     
+    /**
+     * @param resRootDir
+     * 		Refer to this.setResRootDir
+     * @param resProvider
+     * 		Refer to this.setResProvider
+     */
     public AndroidStringXML(String resRootDir, IStringResourcesProvider resProvider) {
     	this.setResRootDir(resRootDir);
     	this.setResProvider(resProvider);
@@ -37,7 +37,14 @@ public class AndroidStringXML {
      * Fields
      *********/
     
+    /**
+     * The root directory path storing the strings.xml files and the values/ directories. In the Android system, this should be the res/ directory.
+     */
     private String resRootDir = null;
+    
+    /**
+     * The string resources provider
+     */
     private IStringResourcesProvider resProvider = null;
     
     
@@ -45,22 +52,41 @@ public class AndroidStringXML {
      * Methods 
      **********/
     
+    /**
+     * Set the root directory path storing the strings.xml files and the values/ directories.
+     * 
+     * @param resRootDir
+     * 		The root directory path.
+     */
     public void setResRootDir(String resRootDir) {
     	this.resRootDir = resRootDir;
     }
     
+    /**
+     * Set the string resources provider.
+     * 
+     * @param resProvider
+     * 		The string resources provider
+     */
     public void setResProvider(IStringResourcesProvider resProvider) {
     	this.resProvider = resProvider;
     }
     
+    /**
+     * Call this method to generate strings.xml files in various languages directories after setting up the resource root directory and the string resources provider.
+     */
     public void generateXMLs() {
     	
-    	AndroidStringXML.StringResourcesReader resReader = new AndroidStringXML.StringResourcesReader(this.resProvider);
-    	
     	try {
+        	
+    		if (this.resRootDir == null || this.resProvider == null) {
+    			throw new MyException("Not specify any resource root directory or the string resources provider.");
+    		}
+    		
+        	AndroidStringXML.StringResourcesReader resReader = new AndroidStringXML.StringResourcesReader(this.resProvider);
 
 	    	String[] langs = resReader.getSupportedLangs();	
-	    	if (langs.length > 0) {	    		
+	    	if (langs == null || langs.length > 0) {	    		
 
 	    		String xmlBody = null;
 	    		String xmlName = "strings.xml";
@@ -123,8 +149,15 @@ public class AndroidStringXML {
      * Classes
      *********/
     
+    /**
+     * The class in charge of reading the parsed string resources from the string resources provider and then build up the content of the string.xml.
+     */
     private static class StringResourcesReader {
         
+    	/**
+    	 * @param provider
+    	 * 		The string resources provider who provides the parsed string resources
+    	 */
         public StringResourcesReader(IStringResourcesProvider provider) {
             this.provider = provider;
             this.readStringResources();
@@ -135,15 +168,77 @@ public class AndroidStringXML {
          * Fields
          ***********/
         
-        private IStringResourcesProvider provider;        
+        /**
+         * The string resources provider
+         */
+        private IStringResourcesProvider provider;
+        
+        /**
+         * The map storing the string.xml's body. The key is the language code and the value is the string.xml's body in the language specified by the key.
+         */
         private Map<String, String> xmlBody = new HashMap<String, String>();
+        
+        /**
+         * The map storing the name attribute's values which have already been declared. The key is the language cod and the value is the arrayList of the name attribute's values which have already been declared in the language specified by the key.
+         */
         private Map<String, ArrayList<String>> nameMap = new HashMap<String, ArrayList<String>>();        
         
         
         /*
          * Methods
          **********/
+
+        /**
+         * Perform the work of reading the string resources from the string resources and then calling other private methods to build the strings.xml's content.
+         * 
+         * @return
+         * 		The count of language of string resources read
+         */
+        private int readStringResources() {
+            
+            int readCount = 0; // A flag to mark how many lang whose string resource has been read out
+            String[] langs = this.provider.getSupportedLangs();
+            
+            try {
+                
+                if (langs.length <= 0) {
+                    throw new MyException("No supported langs were found!");
+                }
+                
+                String xml;
+                for (String s : langs) {
+                	
+                    xml = this.buildXML(s, this.provider.getStrings(s))
+                    	+ this.buildXML(s, this.provider.getStringArrays(s))
+                    	+ this.buildXML(s, this.provider.getQuantityStrings(s));
+                    
+                     if (!xml.equals("")) {
+                        readCount++;
+                        this.xmlBody.put(s, xml);
+                    }
+                }
+                                
+            } catch (MyException e) {
+                e.print1stPoint();
+            }
+            
+            return readCount;
+        }
         
+        /**
+         * Kick out the string resources which its name attribute's value is duplicated with another string resource's under one specific language.
+         * Suppose there are 2 string elements, String A and String B, both having name attribute's value as "title" for the "en" language.
+         * The StringResourcesReader reads String A first then String B. In this case String B would be kicked out because the StringResourcesReader's record shows one string with the same name arribute already exists.
+         * 
+         * @param lang
+         * 		The string resources's language code
+         * @param ls
+         * 		The arrayList of the string resources
+         * @return
+         * 		One arrayList of the string resources which have unique name attribute to each other.
+         * 		Please note that the string resources inside the returned arrayList all have been cast to the Object type.
+         * 		Convert the string resources back to the desired type as appropriate.
+         */
         private ArrayList<Object> kickoutDulplicateName(String lang, ArrayList<? extends AndroidStringBase> ls) {
                             
         	int i;
@@ -184,38 +279,19 @@ public class AndroidStringXML {
             
             return cleanls;
         }
-        
-        private int readStringResources() {
-            
-            int readCount = 0; // A flag to mark how many lang whose string resource has been read out
-            String[] langs = this.provider.getSupportedLangs();
-            
-            try {
                 
-                if (langs.length <= 0) {
-                    throw new MyException("No supported langs were found!");
-                }
-                
-                String xml;
-                for (String s : langs) {
-                	
-                    xml = this.buildXML(s, this.provider.getStrings(s))
-                    	+ this.buildXML(s, this.provider.getStringArrays(s))
-                    	+ this.buildXML(s, this.provider.getQuantityStrings(s));
-                    
-                     if (!xml.equals("")) {
-                        readCount++;
-                        this.xmlBody.put(s, xml);
-                    }
-                }
-                                
-            } catch (MyException e) {
-                e.print1stPoint();
-            }
-            
-            return readCount;
-        }
-        
+        /**
+         * Build strings.xml's body for one language. The xml body doesn't include the header, the opening tag and the closing tag.
+         * 
+         * @param lang
+         * 		The language to build
+         * @param ls
+         * 		The arrayList of string resources to build upon.
+         * @return
+         * 		- OK: The strings.xml's body for one language.
+         *		<br/>
+         * 		- NG: One empty string
+         */
         private String buildXML(String lang, ArrayList<? extends AndroidStringBase> ls) {
         	
         	String xml = ""; 
@@ -263,6 +339,15 @@ public class AndroidStringXML {
         	return xml;
         }
             
+        /**
+         * Get the complete strings.xml's content for one language.
+         * 
+         * @param lang
+         * 		The language to get
+         * @return
+         * 		- If available: Strings.xml's body for one language.
+         * 		- If unavailable: null
+         */
         public String getXML(String lang) {            
         	String xmlBody = this.xmlBody.get(lang);            
             return (xmlBody == null) ?
@@ -270,20 +355,39 @@ public class AndroidStringXML {
                     androidStringXMLFormat.header + androidStringXMLFormat.openingTag + xmlBody + androidStringXMLFormat.closingTag;                   
         }
     
+        /**
+         * @return
+         * 		Refer to the interface IStringResourcesProvider.getDefaultLang
+         */
         public String getDefaultLang() {
         	return this.provider.getDefaultLang();
         }
-        
+
+        /**
+         * @return
+         * 		Refer to the interface IStringResourcesProvider.getSupportedLangs
+         */
         public String[] getSupportedLangs() {
             return this.provider.getSupportedLangs();
         }
     }
     
+    /**
+     * The class in charge of writing the content of the string.xml files to the various values/ directories.
+     */
     private static class StringResourcesWriter {
     	/*
     	 * Methods
     	 **********/
     	
+    	/**
+    	 * Perform the work of writing the content of the string.xml files to the various values/ directories.
+    	 * 
+    	 * @param dstPath
+    	 * 		The destine path to write
+    	 * @param xml
+    	 * 		The xml content to write
+    	 */
     	public void writeXML(String dstPath, String xml) {    		
     		// Write the xml to the file
     		try {
