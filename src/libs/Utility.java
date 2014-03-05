@@ -7,16 +7,29 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.NoSuchFileException;
 
+/**
+ * The class encompassing the utility classes and methods
+ */
 public class Utility {
+	
+	/**
+	 * The utility class in charge of handling files
+	 */
 	public static class Files {
 		
 		/*
 		 * Methods
 		 **********/
 		
+		/**
+		 * Buffer the File object for writing
+		 * 
+		 * @param f
+		 * 		The File object to be buffered
+		 * @return
+		 * 		One BufferedWriter object
+		 */
 		public static BufferedWriter bufferFileWriter(File f) {
     		try {
     			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
@@ -26,7 +39,16 @@ public class Utility {
 				return null;
 			}
 		}
+
 		
+		/**
+		 * Buffer the File object for reading
+		 * 
+		 * @param f
+		 * 		The File object to be buffered
+		 * @return
+		 * 		One BufferedReader object
+		 */
 		public static BufferedReader bufferFileReader(File f) {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(f));
@@ -37,6 +59,22 @@ public class Utility {
 			}
 		}
 		
+		/**
+		 * Open(if not existing, then create) one file
+		 * 
+		 * @param dstPath
+		 * 		The file path
+		 * @param readable
+		 * 		True = open the file as readable. False = not readable.
+		 * @param writable
+		 * 		True = open the file as writable. False = not writable.
+		 * @param executable
+		 * 		True = open the file as executable. False = not executable.
+		 * @param ownerOnly
+		 * 		True = open the file as owner only. False = not owner only.
+		 * @return
+		 * 		One File object representing the opened file
+		 */
 		public static File openFile(String dstPath, Boolean readable, Boolean writable, Boolean executable, Boolean ownerOnly) {
     		// Open the file
     		File f = new File(dstPath);
@@ -66,6 +104,16 @@ public class Utility {
     		return f;
 		}
 		
+		/**
+		 * Read out all the file's content
+		 * 
+		 * @param f
+		 *		The file object to be read
+		 * @return
+		 * 		- OK: The file content
+		 * 		<br/>
+		 * 		- NG: null
+		 */
 		public static String readFileAll(File f) {
 						
 			String s;
@@ -97,6 +145,12 @@ public class Utility {
 			return s;			
 		}
 	
+		/**
+		 * Delete one file or one directory(including all stuff inside)
+		 * 
+		 * @param f
+		 * 		The File object to be deleted
+		 */
 		public static void deleteAll(File f) {
 			
 			if (f.isDirectory()) {
@@ -131,6 +185,12 @@ public class Utility {
 			}
 		}
 	
+		/**
+		 * The overload method of this.deleteAll
+		 * 		
+		 * @param path
+		 * 		The path to the file to be deleted
+		 */
 		public static void deleteAll(String path) {
 			
     		File f = new File(path);    		
