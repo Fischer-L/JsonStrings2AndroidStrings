@@ -1,6 +1,5 @@
 AndroidStringResourcesGenerator
 ===============================
-(Under construction...)
 
 
 ## Usage
@@ -8,4 +7,4 @@ We develope one nice android app. This nice android app is open to several count
 
 
 ## Architecture
-The AndroidStringResourcesGenerator project's structure is modularized and defined with interfaces. This characteristic provides the flexibility that adopting it to parse various source formats(like JSON format, excel file or database), while still reusing the main component which generates the strings.xml, is possible. 
+The AndroidStringResourcesGenerator project's structure is modularized and defined with interfaces. This characteristic provides the flexibility that adopting it to parse various source formats(like JSON format, excel file or database), while still reusing the main component which generates the strings.xml, is possible. Please refer to the Architecture.xlsx for the architecture.
