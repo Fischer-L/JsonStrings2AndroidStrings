@@ -48,6 +48,7 @@ public abstract class AndroidStringItemsBase extends AndroidStringBase {
     /*
      * Methods
      *********/
+    
 	
 	/**
 	 * Get the next item resource.

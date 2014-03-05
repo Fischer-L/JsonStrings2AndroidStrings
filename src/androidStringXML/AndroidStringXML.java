@@ -219,42 +219,45 @@ public class AndroidStringXML {
         private String buildXML(String lang, ArrayList<? extends AndroidStringBase> ls) {
         	
         	String xml = ""; 
-        	ArrayList<Object> list = this.kickoutDulplicateName(lang, ls);
         	
-        	if (list.size() > 0) {
+        	if (ls != null) {
         		
-        		Class targetCls;
-        		StringBuilder sb = new StringBuilder();
-        		
-        		try {
-        		
-	        		for (Object o : list) {
-	        			
-	        			targetCls = o.getClass();
-	        			
-	        			if (targetCls == AndroidString.class) {	
-	        				
-	        				sb.append(androidStringXMLFormat.formatString((AndroidString) o));
-	        				
-	        			} else if (targetCls == AndroidStringArray.class) {	
-	        				
-	        				sb.append(androidStringXMLFormat.formatStringArray((AndroidStringArray) o));
-	        				
-	        			} else if (targetCls == AndroidQuantityString.class) {
-	        				
-	        				sb.append(androidStringXMLFormat.formatQuantityString((AndroidQuantityString) o));
-	        				
-	        			} else {
-	        				throw new MyException("Unknown resouce class : " + targetCls.toString());
-	        			}
-	        		}
+	        	ArrayList<Object> list = this.kickoutDulplicateName(lang, ls);
+	        	
+	        	if (list.size() > 0) {
 	        		
-	        		xml = sb.toString();
-        		
-        		} catch (MyException e) {
-        			e.print1stPoint();
-        		}
-        		
+	        		Class targetCls;
+	        		StringBuilder sb = new StringBuilder();
+	        		
+	        		try {
+	        		
+		        		for (Object o : list) {
+		        			
+		        			targetCls = o.getClass();
+		        			
+		        			if (targetCls == AndroidString.class) {	
+		        				
+		        				sb.append(androidStringXMLFormat.formatString((AndroidString) o));
+		        				
+		        			} else if (targetCls == AndroidStringArray.class) {	
+		        				
+		        				sb.append(androidStringXMLFormat.formatStringArray((AndroidStringArray) o));
+		        				
+		        			} else if (targetCls == AndroidQuantityString.class) {
+		        				
+		        				sb.append(androidStringXMLFormat.formatQuantityString((AndroidQuantityString) o));
+		        				
+		        			} else {
+		        				throw new MyException("Unknown resouce class : " + targetCls.toString());
+		        			}
+		        		}
+		        		
+		        		xml = sb.toString();
+	        		
+	        		} catch (MyException e) {
+	        			e.print1stPoint();
+	        		}
+	        	}
         	}
         	
         	return xml;

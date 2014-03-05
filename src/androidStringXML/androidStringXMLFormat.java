@@ -4,9 +4,12 @@ import androidStringResources.AndroidQuantityString;
 import androidStringResources.AndroidString;
 import androidStringResources.AndroidStringArray;
 
+/**
+ * The class in charge of formating the Android XML.
+ */
 class androidStringXMLFormat {
     /*
-     * Fields
+     * Fields of the Android XML template
      **********/
     
     public static final String header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -22,10 +25,38 @@ class androidStringXMLFormat {
      * Methods
      ***********/
     
+    /**
+     * Format the basic string element in the Android's strings.xml file. In the strings.xml, it is like:
+	 * <br/>
+	 * {@code
+	 * 		<string name="string_name">text_string</string>
+	 * }
+	 * <br/>
+     * 
+     * @param s
+     * 		One Android string element resource.
+     * @return
+     * 		One complete string element xml
+     */
     public static String formatString(AndroidString s) {
         return String.format(androidStringXMLFormat.stringTmpl, s.getName(), s.getValue());
     }
-            
+
+    
+    /**
+     * Format the string array element in the Android's strings.xml file. In the strings.xml, it is like:
+	 * <br/>
+	 * {@code
+	 * 		<string-array name="string_array_name">
+	 * 			<item>text_string</item>
+	 * 		</string-array>
+	 * }
+     * 
+     * @param s
+     * 		One Android string array element resource.
+     * @return
+     * 		One complete string array element xml.
+     */
     public static String formatStringArray(AndroidStringArray sa) {
                     
         StringBuilder builder = new StringBuilder();
@@ -39,7 +70,23 @@ class androidStringXMLFormat {
         // Compose the complete <string-array> element
         return String.format(androidStringXMLFormat.stringArrayTagTmpl, sa.getName(), builder.toString());
     }
+
+
     
+    /**
+     * Format the quantity string element in the Android's strings.xml file. In the strings.xml, it is like:
+	 * <br/>
+	 * {@code
+	 * 		<plurals name="plural_name">
+	 * 			<item quantity=["zero" | "one" | "two" | "few" | "many" | "other"]>text_string</item>
+	 * 		</plurals>
+	 * }
+     * 
+     * @param s
+     * 		One Android quantity string element resource.
+     * @return
+     * 		One complete quantity string element xml.
+     */
     public static String formatQuantityString(AndroidQuantityString qs) {
                      
         AndroidQuantityString.AndroidQuantityItem item;
