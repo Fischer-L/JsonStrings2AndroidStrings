@@ -7,7 +7,7 @@ import androidStringResources.AndroidStringArray;
 /**
  * The class in charge of formating the Android XML.
  */
-class androidStringXMLFormat {
+class AndroidStringXMLFormat {
     /*
      * Fields of the Android XML template
      **********/
@@ -39,7 +39,7 @@ class androidStringXMLFormat {
      * 		One complete string element xml
      */
     public static String formatString(AndroidString s) {
-        return String.format(androidStringXMLFormat.stringTmpl, s.getName(), s.getValue());
+        return String.format(AndroidStringXMLFormat.stringTmpl, s.getName(), s.getValue());
     }
 
     
@@ -64,11 +64,11 @@ class androidStringXMLFormat {
         
         // Format the <item>s elements
         while ((item = sa.nextItem()) != null) {
-            builder.append(String.format(androidStringXMLFormat.stringArrayItemTmpl, item));
+            builder.append(String.format(AndroidStringXMLFormat.stringArrayItemTmpl, item));
         }
         
         // Compose the complete <string-array> element
-        return String.format(androidStringXMLFormat.stringArrayTagTmpl, sa.getName(), builder.toString());
+        return String.format(AndroidStringXMLFormat.stringArrayTagTmpl, sa.getName(), builder.toString());
     }
 
 
@@ -94,11 +94,11 @@ class androidStringXMLFormat {
         
         // Format the <item>s elements
         while ((item = qs.nextItem()) != null) {
-            builder.append(String.format(androidStringXMLFormat.quantityStringItemTmpl, item.quantity, item.value));
+            builder.append(String.format(AndroidStringXMLFormat.quantityStringItemTmpl, item.quantity, item.value));
         }
         
         // Compose the complete <plurals> element
-        return String.format(androidStringXMLFormat.quantityStringTagTmpl, qs.getName(), builder.toString());
+        return String.format(AndroidStringXMLFormat.quantityStringTagTmpl, qs.getName(), builder.toString());
     }
 
 }

@@ -12,7 +12,7 @@ import androidStringResources.AndroidQuantityString.AndroidQuantityItem;
 import androidStringResources.AndroidString;
 import androidStringResources.AndroidStringArray;
 
-public class androidStringXMLFormatTest {
+public class AndroidStringXMLFormatTest {
 
 	@Test
 	public void testFormatString() {
@@ -20,7 +20,7 @@ public class androidStringXMLFormatTest {
 		String value = "AndroidString";
 		AndroidString s = new AndroidString(name, value);
 		String expected = "<string name=\"" + name + "\">" + value + "</string>";
-		assertEquals(expected, androidStringXMLFormat.formatString(s));
+		assertEquals(expected, AndroidStringXMLFormat.formatString(s));
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class androidStringXMLFormatTest {
 		
 		AndroidStringArray sa = new AndroidStringArray(name, itms);
 		
-		assertEquals(expected, androidStringXMLFormat.formatStringArray(sa));
+		assertEquals(expected, AndroidStringXMLFormat.formatStringArray(sa));
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class androidStringXMLFormatTest {
 		
 		AndroidQuantityString qs = new AndroidQuantityString(name, itms);
 		
-		assertEquals(expected, androidStringXMLFormat.formatQuantityString(qs));
+		assertEquals(expected, AndroidStringXMLFormat.formatQuantityString(qs));
 	}
 
 }

@@ -15,7 +15,7 @@ public interface IStringResourcesProvider {
 	
 	/**
 	 * Get the default string resource language code. The string resources in this language will be used as the content of the strings.xml in the values/ directory.
-	 * The default string resource language shall be one of the supported language.
+	 * The default string resource language shall be one of the supported languages.
 	 *
 	 * @return
 	 * 		The default string resource language

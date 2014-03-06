@@ -313,15 +313,15 @@ public class AndroidStringXML {
 		        			
 		        			if (targetCls == AndroidString.class) {	
 		        				
-		        				sb.append(androidStringXMLFormat.formatString((AndroidString) o));
+		        				sb.append(AndroidStringXMLFormat.formatString((AndroidString) o));
 		        				
 		        			} else if (targetCls == AndroidStringArray.class) {	
 		        				
-		        				sb.append(androidStringXMLFormat.formatStringArray((AndroidStringArray) o));
+		        				sb.append(AndroidStringXMLFormat.formatStringArray((AndroidStringArray) o));
 		        				
 		        			} else if (targetCls == AndroidQuantityString.class) {
 		        				
-		        				sb.append(androidStringXMLFormat.formatQuantityString((AndroidQuantityString) o));
+		        				sb.append(AndroidStringXMLFormat.formatQuantityString((AndroidQuantityString) o));
 		        				
 		        			} else {
 		        				throw new MyException("Unknown resouce class : " + targetCls.toString());
@@ -352,7 +352,7 @@ public class AndroidStringXML {
         	String xmlBody = this.xmlBody.get(lang);            
             return (xmlBody == null) ?
                     null :
-                    androidStringXMLFormat.header + androidStringXMLFormat.openingTag + xmlBody + androidStringXMLFormat.closingTag;                   
+                    AndroidStringXMLFormat.header + AndroidStringXMLFormat.openingTag + xmlBody + AndroidStringXMLFormat.closingTag;                   
         }
     
         /**
