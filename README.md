@@ -11,7 +11,7 @@ This branch project parses string resources in .json files and then pass the par
 Suppoes we support two languages, en(English) and es(Espanol), and en is the default language so three strings.xml files should be genrated as below:
 
 ### values/string.xml
-```
+```xml
 <string name="title">
 	Title
 </string>
@@ -26,7 +26,7 @@ Suppoes we support two languages, en(English) and es(Espanol), and en is the def
 ```
 
 ### values-en/string.xml
-```
+```xml
 <string name="title">
 	Title
 </string>
@@ -41,7 +41,7 @@ Suppoes we support two languages, en(English) and es(Espanol), and en is the def
 ```
 
 ### values-es/string.xml
-```
+```xml
 <string name="title">
 	Title_in_Espanol
 </string>
@@ -63,7 +63,7 @@ If we maintain 3 strings.xml files, one day we wnat to change the plurals node's
 For the above case, follow the below JSON format to store the string resources in the .json file and throw this .json source to the Js2As program.
 The Js2As program will generate those 3 strings.xml files for you automatically. When we want to change the name attribute of one plurals node, it only requires modifying one line in this .json source file.
 
-```
+```javascript
 {
 
 	// The default lang for all string resources, shall be one of the supported langs in the below string resources.
