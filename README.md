@@ -152,7 +152,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			"values" : [
 			
 				// The object storing one item node's data
-				item : {
+				"item" : {
 				
 					// The value of the item node's quantity attribute
 					"quantity" : "one",
@@ -175,7 +175,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 				},
 			
 				// This 2nd object represents the 2nd item node in this plurals(with name="number_of_songs") node.
-				item : {
+				"item" : {
 				
 					"quantity" : "other",
 					
