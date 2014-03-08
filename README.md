@@ -3,7 +3,7 @@ Js2As
 
 
 ## Usage
-This branch project parses string resources in .json files and then pass the parsed resources to the master branch's AndroidStringResourcesGenerator. Utilize the AndroidStringResourcesGenerator to generate strings.xml files.
+This project parses string resources in .json files and then pass the parsed resources to the AndroidStringResourcesGenerator. Utilize the AndroidStringResourcesGenerator project to generate strings.xml files.
 
 
 ## String resources in JSON
@@ -18,7 +18,7 @@ Suppoes we support two languages, en(English) and es(Espanol), and en is the def
 <string-array name="country_list">
 	<item>Canada</item>
 	<item>Norway</item>
-</string-array>
+</string-array>project
 <plurals name="number_of_songs">
 	<item quantity="one">One song</item>
 	<item quantity="other">%d song</item>
@@ -107,7 +107,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			// The array storing the string array's items. Each array element stores one item node's data
 			"values" : [
 			
-				// The array storing one item node's data in the supported langs
+				// The array storing one item noprojectde's data in the supported langs
 				"item" : [
 					{
 						// The field indicating which language this string value belongs to, for example this field says the supported lang is English(en).
