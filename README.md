@@ -1,4 +1,4 @@
-Js2As
+JsonStrings2AndroidStrings
 ===============================
 
 
