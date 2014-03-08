@@ -5,5 +5,5 @@
 *.war
 *.ear
 bin/
-doc/
+docs/AndroidStringResourcesGenerator
 !src/externaLibs/*.jar
