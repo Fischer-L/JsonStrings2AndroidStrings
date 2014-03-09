@@ -10,7 +10,7 @@ This project parses string resources in .json files and then pass the parsed res
 
 Suppoes we support two languages, en(English) and es(Espanol), and en is the default language so three strings.xml files should be genrated as below:
 
-### values/string.xml
+### values/strings.xml
 ```xml
 <string name="title">
 	Title
@@ -25,7 +25,7 @@ Suppoes we support two languages, en(English) and es(Espanol), and en is the def
 </plurals>
 ```
 
-### values-en/string.xml
+### values-en/strings.xml
 ```xml
 <string name="title">
 	Title
@@ -40,7 +40,7 @@ Suppoes we support two languages, en(English) and es(Espanol), and en is the def
 </plurals>
 ```
 
-### values-es/string.xml
+### values-es/strings.xml
 ```xml
 <string name="title">
 	Title_in_Espanol
@@ -71,7 +71,8 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 	
 	// The array of the string nodes in the strings.xml. Each object in the array represents one string node.
 	// The name of this array, "string", is exactly equal to the string node's tag name, <string>
-	"string" : [		
+	"string" : [	
+		
 		// This object stores the info/values of one string node resource
 		{
 			// The value of the name attribute
@@ -79,6 +80,8 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			
 			// The array storing the string values in the supported langs
 			"values" : [ 
+				
+				// This object represents the string node's value
 				{
 					// The field indicating which language this string value belongs to, for example this field says the supported lang is English(en).
 					"lang" : "en",
@@ -109,6 +112,8 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			
 				// The array storing one item noprojectde's data in the supported langs
 				"item" : [
+				
+					// This object stores the item node's data
 					{
 						// The field indicating which language this string value belongs to, for example this field says the supported lang is English(en).
 						"lang" : "en",
