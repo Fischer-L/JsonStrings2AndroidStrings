@@ -31,13 +31,38 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsStringsTest {
 	}
 
 	@Test
-	public void testNormalCase() {
-		
+	public void testNormalCase() {		
 		try {			
 			Object[] args = {
 				new JSONArray(JSONSouce.normalCase)
 			};
 			assertEquals(4, this.saveJs2AsStrings.invoke(this.testObj, args));
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testInvalidNameCase() {	
+		try {			
+			Object[] args = {
+				new JSONArray(JSONSouce.invalidNameCase)
+			};
+			assertEquals(0, this.saveJs2AsStrings.invoke(this.testObj, args));
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	@Test
+	public void testInvalidLangCase() {	
+		try {			
+			Object[] args = {
+				new JSONArray(JSONSouce.invalidLangCase)
+			};
+			assertEquals(2, this.saveJs2AsStrings.invoke(this.testObj, args));
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
@@ -60,7 +85,7 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsStringsTest {
 	private static class JSONSouce {
 		
 		public static final String normalCase = ""
-			+"[" // 2 valid string nodes, 4 valid string resources
+			+"[" // 4 valid string resources
 			+	"{"
 			+		"\"name\" : \"s0\","
 			+		"\"resources\" : ["
@@ -83,6 +108,66 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsStringsTest {
 			+			"}, "
 			+			"{"
 			+				"\"lang\" : \"es\","
+			+				"\"strValue\" : \"s1_in_Espanol\""
+			+			"}"
+			+		"]"
+			+	"}"
+			+"]";
+		
+		public static final String invalidNameCase = ""
+			+"[" // 0 valid string resources
+			+	"{"
+			+		"\"name\" : \"\"," // Invalid name
+			+		"\"resources\" : ["
+			+			"{"
+			+				"\"lang\" : \"en\","
+			+				"\"strValue\" : \"s0\""
+			+			"}, "
+			+			"{"
+			+				"\"lang\" : \"es\","
+			+				"\"strValue\" : \"s0_in_Espanol\""
+			+			"}"
+			+		"]"
+			+	"}, "
+			+	"{"
+			+		"\"name\" : null," // Invalid name
+			+		"\"resources\" : ["
+			+			"{"
+			+				"\"lang\" : \"en\","
+			+				"\"strValue\" : \"s1\""
+			+			"}, "
+			+			"{"
+			+				"\"lang\" : \"es\","
+			+				"\"strValue\" : \"s1_in_Espanol\""
+			+			"}"
+			+		"]"
+			+	"}"
+			+"]";
+		
+		public static final String invalidLangCase = ""
+			+"[" // 2 valid string resources
+			+	"{"
+			+		"\"name\" : \"s0\","
+			+		"\"resources\" : ["
+			+			"{"
+			+				"\"lang\" : \"\"," // Invalid lang
+			+				"\"strValue\" : \"s0\""
+			+			"}, "
+			+			"{"
+			+				"\"lang\" : \"es\","
+			+				"\"strValue\" : \"s0_in_Espanol\""
+			+			"}"
+			+		"]"
+			+	"}, "
+			+	"{"
+			+		"\"name\" : \"s1\","
+			+		"\"resources\" : ["
+			+			"{"
+			+				"\"lang\" : \"en\","
+			+				"\"strValue\" : \"s1\""
+			+			"}, "
+			+			"{"
+			+				"\"lang\" : null," // Invalid lang
 			+				"\"strValue\" : \"s1_in_Espanol\""
 			+			"}"
 			+		"]"
