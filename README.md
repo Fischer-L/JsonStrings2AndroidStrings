@@ -73,7 +73,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 	// The name of this array, "string", is exactly equal to the string node's tag name, <string>
 	"string" : [	
 		
-		// This object stores the info/values of one string node resource
+		// This object stores one string node's resources in different languages.
 		{
 			// The value of the name attribute
 			"name" : "title",
@@ -87,11 +87,11 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 					"lang" : "en",
 					
 					// The string value, for example, this field is the word, "Title", in Engish
-					"value" : "Title" 
+					"strValue" : "Title" 
 				},
 				{
 					"lang" : "es",
-					"value" : "Title_in_Espanol"
+					"strValue" : "Title_in_Espanol"
 				}
 			]
 		},
@@ -102,42 +102,27 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 	// The array of the string-array nodes in the strings.xml. Each object in the array represents one string-array node.
 	// The name of this array, "string-array", is exactly equal to the string-array node's tag name, <string-array>.
 	"string-array" : [
-		// This object storing the info/values of one string-array node reource
+	
+		// This object storing one string-array node reources in different langauges
 		{
 			// The value of the name attribute
 			"name" : "country_list",
 			
-			// The array storing the string array's items. Each array element stores one item node's data
+			// The array storing the string-array node's item resources in different supported languages.
 			"values" : [
-			
-				// The array storing all the string values of this item node in the supported langs
-				"item" : [
 				
-					// This object stores the item node's data
-					{
-						// The field indicating which language this string value belongs to, for example this field says the supported lang is English(en).
-						"lang" : "en",
-						
-						// The string value, for example, this field is the word, "Canada", in Engish
-						"value" : "Canada" 
-					},
-					{
-						"lang" : "es",
-						"value" : "Canada_in_Espanol"
-					}
-				],
-				
-				// This 2nd array represents the 2nd item node in this string-array(with name="country_list") node.
-				"item" : [
-					{
-						"lang" : "en",
-						"value" : "Norway"
-					},
-					{
-						"lang" : "es",
-						"value" : "Norway_in_Espanol"
-					}
-				]
+				// The object storing the string-array reource for one specific langauge
+				{
+					// The field indicating which language this string value belongs to. For example this field says the supported lang is English(en).
+					"lang" : "en",
+					
+					// The array storing the items nodes' strings in one sepecific language. For example, this array stores the country list in English
+					"items" : ["Canada", "Norway"]
+				},				
+				{
+					"lang" : "es",
+					"items" : ["Canada_in_Espanol", "Norway_in_Espanol"]
+				}
 			]
 		
 		},
@@ -157,8 +142,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			"values" : [
 			
 				// The object storing one item node's data
-				"item" : {
-				
+				{				
 					// The value of the item node's quantity attribute
 					"quantity" : "one",
 					
@@ -180,8 +164,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 				},
 			
 				// This 2nd object represents the 2nd item node in this plurals(with name="number_of_songs") node.
-				"item" : {
-				
+				{				
 					"quantity" : "other",
 					
 					"strings" : [
