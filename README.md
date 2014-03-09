@@ -79,7 +79,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			"name" : "title",
 			
 			// The array storing the string values in the supported langs
-			"values" : [ 
+			"resources" : [ 
 				
 				// This object represents the string node's value
 				{
@@ -109,7 +109,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			"name" : "country_list",
 			
 			// The array storing the string-array node's item resources in different supported languages.
-			"values" : [
+			"resources" : [
 				
 				// The object storing the string-array reource for one specific langauge
 				{
@@ -139,7 +139,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			"name" : "number_of_songs",
 			
 			// The array storing the plural node's items. Each array element stores one item node's data
-			"values" : [
+			"resources" : [
 			
 				// The object storing one item node's data
 				{				
