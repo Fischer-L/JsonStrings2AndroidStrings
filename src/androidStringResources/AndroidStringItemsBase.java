@@ -66,9 +66,19 @@ public abstract class AndroidStringItemsBase extends AndroidStringBase {
      * @param
      * 		its: The arrayList storing the &lt;item&gt; resources
      */
-    public void setItems(ArrayList<?> its) {
+    protected void setItems(ArrayList<?> its) {
 		this.items = its;
 		this.itemsItr = this.items.iterator();    	
+    }
+    
+    /**
+     * Rewind the internal item iterator to the head so next time when calling this.nextItem(), this.nextItem will start returning items from the the 1st one
+     * 
+     */
+    public void rewind() {
+    	if (this.items != null) {
+    		this.itemsItr = this.items.iterator();
+    	}
     }
     
     /**

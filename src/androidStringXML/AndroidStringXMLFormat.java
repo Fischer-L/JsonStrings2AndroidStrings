@@ -36,7 +36,7 @@ class AndroidStringXMLFormat {
      * @param s
      * 		One Android string element resource.
      * @return
-     * 		One complete string element xml
+     * 		- If OK: One complete string element xml
      */
     public static String formatString(AndroidString s) {
         return String.format(AndroidStringXMLFormat.stringTmpl, s.getName(), s.getValue());
@@ -55,18 +55,25 @@ class AndroidStringXMLFormat {
      * @param s
      * 		One Android string array element resource.
      * @return
-     * 		One complete string array element xml.
+     * 		- If OK: One complete string array element xml.
+     * 		<br/>
+     * 		- If NG: An empty string, "".
      */
     public static String formatStringArray(AndroidStringArray sa) {
+        
+    	if (sa.size() <= 0) {
+    		return "";
+    	}
                     
         StringBuilder builder = new StringBuilder();
         String item;
         
         // Format the <item>s elements
+        sa.rewind();
         while ((item = sa.nextItem()) != null) {
             builder.append(String.format(AndroidStringXMLFormat.stringArrayItemTmpl, item));
         }
-        
+
         // Compose the complete <string-array> element
         return String.format(AndroidStringXMLFormat.stringArrayTagTmpl, sa.getName(), builder.toString());
     }
@@ -85,19 +92,26 @@ class AndroidStringXMLFormat {
      * @param s
      * 		One Android quantity string element resource.
      * @return
-     * 		One complete quantity string element xml.
+     * 		- If OK: One complete quantity string element xml.
+     * 		<br/>
+     * 		- If NG: An empty string, "".
      */
     public static String formatQuantityString(AndroidQuantityString qs) {
-                     
+        
+    	if (qs.size() <= 0) {
+    		return "";
+    	}
+    	
         AndroidQuantityString.AndroidQuantityItem item;
         StringBuilder builder = new StringBuilder();
         
         // Format the <item>s elements
+        qs.rewind();
         while ((item = qs.nextItem()) != null) {
             builder.append(String.format(AndroidStringXMLFormat.quantityStringItemTmpl, item.quantity, item.value));
         }
-        
-        // Compose the complete <plurals> element
+
+        // Compose the complete <plurals> element	        
         return String.format(AndroidStringXMLFormat.quantityStringTagTmpl, qs.getName(), builder.toString());
     }
 
