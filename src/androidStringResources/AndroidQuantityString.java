@@ -3,6 +3,8 @@ package androidStringResources;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import libs.MyException;
+
 /**
  * This class represent the quantity string element in the Android's strings.xml file. In the strings.xml, it is like:
  * <br/>
@@ -26,9 +28,17 @@ public class AndroidQuantityString extends AndroidStringItemsBase {
         // Retain items with valid quantity
         ArrayList<AndroidQuantityItem> valids = new  ArrayList<AndroidQuantityItem>();
         for (AndroidQuantityItem i : items) {
-            if (AndroidQuantityString.isValidQuantity(i.quantity)) {
-            	valids.add(i);
-            }
+        	try {
+	            if (AndroidQuantityString.isValidQuantity(i.quantity)) {
+	            	valids.add(i);
+	            } else {
+	            	throw new MyException(
+	            		String.format("The item(value = %s) in the quantity string(name = %s) has invalid quantity(= %s)", i.value, n, i.quantity)
+	            	);
+	            }
+        	} catch (MyException e) {
+        		e.print1stPoint();
+        	}
         }        
         this.setItems(valids);
     }

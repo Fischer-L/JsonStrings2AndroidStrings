@@ -168,7 +168,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		}
 		
 		
-		// Thirdly pick out one lang as default form the langList
+		// Thirdly pick out one lang as default from the langList
 		lang = null;
 		if (langList.size() == 1) {
 		// Ideal case: there is only one default lang defined
@@ -226,6 +226,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				
 				if (defaultLangsPool.get(p) == null) {
 					
+					// TBW: Cannot use null!!!
 					defaultLangsPool.put(p, null);
 					
 					jObj = this.readJsonObject(p);
