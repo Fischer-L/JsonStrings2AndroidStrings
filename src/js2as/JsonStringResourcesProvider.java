@@ -17,10 +17,16 @@ import androidStringResources.IStringResourcesProvider;
 
 public class JsonStringResourcesProvider implements IStringResourcesProvider {
 
-
 	/*
 	 * Fields, methods & classes for parsing JSON string resources 	
 	 **********/
+	
+	private static class CONST {
+		
+		public static final int NO_DEFAULT_LANG_INDEX = -1;
+		
+		public static final String NO_DEFAULT_LANG_DEFINED = null;
+	}
 	
 	private static class JsonKeys {
 				
@@ -156,7 +162,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		// Secondly kick out the case which defines no default lang
 		try {
 			for (i = langList.size() - 1; i >= 0; i--) {						
-				if (langList.get(i) == null) {							
+				if (langList.get(i) == CONST.NO_DEFAULT_LANG_DEFINED) {							
 					MyException e = new MyException("The files: " + langPathList.get(i).toString() + " define no default language. If this is ok, please jsut ignore this warning.");
 					langList.remove(i);
 					langPathList.remove(i);
@@ -187,11 +193,11 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 			}
 			
 			try {
-				StringBuilder sb = new StringBuilder("Multiple default language defined >>> \n");
+				StringBuilder sb = new StringBuilder("Multiple default language defined => \n");
 				for (i = 0; i < langList.size(); i++) {	
-					sb.append("The language " + langList.get(i) + " is defined by the files: " + langPathList.get(i).toString() + "\n");
+					sb.append("    The language " + langList.get(i) + " is defined by the files: " + langPathList.get(i).toString() + "\n");
 				}
-				sb.append("Try to take the language " + lang + "as default.");
+				sb.append("    Try to take the language " + lang + "as default.");
 				throw new MyException(sb.toString());
 			} catch (MyException e) {
 				e.print1stPoint();					
@@ -219,15 +225,15 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		if (paths != null && paths.length > 0) {
 			
 			JSONObject jObj;
+			ArrayList<String> pathsChked = new ArrayList<String>();
 			HashMap<String, String> defaultLangsPool = new HashMap<String, String>(); // key = the file path, value = the default lang defined in this file
 			
 			// Read JSON object from .json files and convert the JSON string resources into the Android string resources one file by one file
 			for (String p : paths) {
 				
-				if (defaultLangsPool.get(p) == null) {
+				if (pathsChked.indexOf(p) < 0) {
 					
-					// TBW: Cannot use null!!!
-					defaultLangsPool.put(p, null);
+					pathsChked.add(p);
 					
 					jObj = this.readJsonObject(p);
 					
@@ -242,7 +248,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 								parsedCount++;
 								// Collect all the default langs defined in the different .json files first.
 								// Later decide to take which one.
-								defaultLangsPool.put(p, jObj.optString(JsonKeys.defaultLangKey, null));								
+								defaultLangsPool.put(p, jObj.optString(JsonKeys.defaultLangKey, CONST.NO_DEFAULT_LANG_DEFINED));								
 							}
 							
 						} else {
@@ -267,8 +273,8 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	/*
 	 * Fields of the Android string resources
 	 **********/
-	
-	private int defaultLangIdx = -1;
+
+	private int defaultLangIdx = CONST.NO_DEFAULT_LANG_INDEX;
 	private ArrayList<String> supportedLangs = null;
 	private ArrayList<AndroidString> asStrings = null;
 	private ArrayList<AndroidStringArray> asStringArrays = null;
