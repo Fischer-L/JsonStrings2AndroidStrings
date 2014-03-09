@@ -28,7 +28,9 @@ public class Utility {
 		 * @param f
 		 * 		The File object to be buffered
 		 * @return
-		 * 		One BufferedWriter object
+		 * 		- If OK: One BufferedWriter object
+		 * 		<br/>
+		 * 		- If NG: null
 		 */
 		public static BufferedWriter bufferFileWriter(File f) {
     		try {
@@ -47,7 +49,9 @@ public class Utility {
 		 * @param f
 		 * 		The File object to be buffered
 		 * @return
-		 * 		One BufferedReader object
+		 * 		- If OK: One BufferedReader object
+		 * 		<br/>
+		 * 		- If NG: null
 		 */
 		public static BufferedReader bufferFileReader(File f) {
 			try {
@@ -73,7 +77,9 @@ public class Utility {
 		 * @param ownerOnly
 		 * 		True = open the file as owner only. False = not owner only.
 		 * @return
-		 * 		One File object representing the opened file
+		 * 		- If OK: One File object representing the opened file
+		 * 		<br/>
+		 * 		- If NG: null
 		 */
 		public static File openFile(String dstPath, Boolean readable, Boolean writable, Boolean executable, Boolean ownerOnly) {
     		// Open the file
@@ -105,48 +111,81 @@ public class Utility {
 		}
 		
 		/**
-		 * Read out all the file's content
+		 * readFileAll(1): Read out all the file's content
 		 * 
 		 * @param f
 		 *		The file object to be read
 		 * @return
-		 * 		- OK: The file content
+		 * 		- If OK: The file content
 		 * 		<br/>
-		 * 		- NG: null
+		 * 		- If NG: null
 		 */
 		public static String readFileAll(File f) {
 						
-			String s;
-			BufferedReader br = Utility.Files.bufferFileReader(f);
+			String s = null;
 			
-			if (br == null) {
-				s = null;
+			if (f.isFile()) {
 				
-			} else {
-				StringBuilder sb = new StringBuilder();
+				BufferedReader br = Utility.Files.bufferFileReader(f);
+				
+				if (br != null) {
 					
-				try {
-					while ((s = br.readLine()) != null) {
-						sb.append(s);
+					StringBuilder sb = new StringBuilder();
+						
+					try {
+						while ((s = br.readLine()) != null) {
+							sb.append(s);
+						}
+						s = sb.toString();
+					} catch (IOException e) {
+						s = null;
+						(new MyException("Fail to read the file:" + f.getPath() + "!")).print1stPoint();
 					}
-					s = sb.toString();
-				} catch (IOException e) {
-					s = null;
-					(new MyException("Fail to read the file:" + f.getPath() + "!")).print1stPoint();
+					
+					try {
+						br.close();
+					} catch (IOException e) {
+						(new MyException("Fail to close the file buffer:" + f.getPath() + "!")).print1stPoint();
+					}
 				}
-				
+			} else {				
 				try {
-					br.close();
-				} catch (IOException e) {
-					(new MyException("Fail to close the file buffer:" + f.getPath() + "!")).print1stPoint();
-				}
+					throw new MyException(f.getPath() + " is not a readable file!");
+				} catch (MyException e) {
+					e.print1stPoint();
+				}				
 			}
 			
 			return s;			
 		}
+
+		
+		/**
+		 * readFileAll(2): The overload method of this.readFileAll(1)
+		 * 		
+		 * @param path
+		 * 		The path to the file to be read
+		 * @return
+		 */
+		public static String readFileAll(String path) {
+			
+    		File f = new File(path);    		
+    		
+    		try {    			
+    			if (f.exists()) {
+    				f.setReadable(true, false);
+    				return Utility.Files.readFileAll(f);
+    			} else {
+    				throw new MyException(path + " -> No such file to read!");
+    			}    			
+    		} catch (MyException e) {
+    			e.print1stPoint();
+    			return null;
+    		}
+		}
 	
 		/**
-		 * Delete one file or one directory(including all stuff inside)
+		 * deleteAll(1): Delete one file or one directory(including all stuff inside)
 		 * 
 		 * @param f
 		 * 		The File object to be deleted
@@ -186,7 +225,7 @@ public class Utility {
 		}
 	
 		/**
-		 * The overload method of this.deleteAll
+		 * deleteAll(2): The overload method of this.deleteAll(1)
 		 * 		
 		 * @param path
 		 * 		The path to the file to be deleted
