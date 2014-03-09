@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import libs.MyException;
+import libs.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +17,10 @@ import androidStringResources.AndroidStringArray;
 import androidStringResources.IStringResourcesProvider;
 
 public class JsonStringResourcesProvider implements IStringResourcesProvider {
+	
+	public JsonStringResourcesProvider(String[] paths) {
+		this.parseJsonFiles(paths);
+	}
 
 	/*
 	 * Fields, methods & classes for parsing JSON string resources 	
@@ -40,13 +45,16 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				
 				public static final String nameKey = "name";
 				
-				public static class ValuesArray {
+				public static class Resources {
 					
-					public static final String key = "values";
+					public static final String key = "resources";
 					
-					public static final String langKey = "lang";
+					public static class StringValue {
 					
-					public static final String valueKey = "value";
+						public static final String langKey = "lang";
+						
+						public static final String strValueKey = "strValue";
+					}
 				}
 			}			
 		}
@@ -59,17 +67,15 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				
 				public static final String nameKey  = "name";
 				
-				public static class ValuesArray {
+				public static class Resources {
 					
-					public static final String key = "values";
+					public static final String key = "resources";
 					
-					public static class ItemNodeArray {
-						
-						public static final String key = "item";
+					public static class ItemNodes {
 						
 						public static final String langKey = "lang";
 						
-						public static final String valueKey = "value";
+						public static final String itemsKey = "items";
 					}
 				}
 			}
@@ -83,9 +89,9 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				
 				public static final String nameKey  = "name";
 				
-				public static class ValuesArray {
+				public static class Resources {
 					
-					public static final String key = "values";
+					public static final String key = "resources";
 					
 					public static class ItemNode {
 						
@@ -109,18 +115,150 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	
 	private JSONObject readJsonObject(String path) {
 		
+		JSONObject jo = null;
+		String jsTxt = Utility.Files.readFileAll(path);
+		
+		if (jsTxt != null) {
+			try {
+				jo = new JSONObject(jsTxt);
+			} catch (Exception e) {
+				jo = null;
+				(new MyException("Unable to read the file: " + path + " because of the corrupt JSON.")).print1stPoint();
+			}			
+		}
+		
+		return jo;
 	}
 	
-	private boolean js2asStrings(JSONArray ja) {
+	private int saveJs2AsStrings(JSONArray stringNodeArray) {
 		
+		int i, j, savedCount = 0;
+		
+		JSONObject sNode;
+		
+		String nodeName;
+		JSONArray nodeRes;
+		JSONObject nodeStr;
+		
+		String strLang;
+		String strValue;
+		
+		ArrayList<AndroidString> asStrings;
+		
+		for (i = 0; i < stringNodeArray.length(); i++) {
+				
+			sNode = stringNodeArray.optJSONObject(i);
+			if (sNode != null) {
+				
+				nodeName = sNode.optString(JsonKeys.StringNodeArray.StringNode.nameKey);
+				nodeRes = sNode.optJSONArray(JsonKeys.StringNodeArray.StringNode.Resources.key);
+				
+				if (   nodeRes != null
+					&& !nodeName.equals("")
+				) {
+					
+					for (j = 0; j < nodeRes.length(); j++) {
+						
+						nodeStr = nodeRes.optJSONObject(j);
+						if (nodeStr != null) {
+							
+							strLang = nodeStr.optString(JsonKeys.StringNodeArray.StringNode.Resources.StringValue.langKey);
+							strValue = nodeStr.optString(JsonKeys.StringNodeArray.StringNode.Resources.StringValue.strValueKey);
+							
+							if (!strLang.equals("")) {
+								
+								asStrings = this.asStringsMap.get(strLang);
+								if (asStrings == null) {
+									asStrings = new ArrayList<AndroidString>();
+								}
+								
+								asStrings.add(new AndroidString(nodeName, strValue));
+								this.asStringsMap.put(strLang, asStrings);
+								savedCount++;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return savedCount;
 	}
 	
-	private boolean js2asStringArrays(JSONArray ja) {
+	private int saveJs2AsStringArrays(JSONArray stringArrayNodeArray) {
 		
+		int i, j, k, savedCount = 0;
+		
+		JSONObject saNode;
+		
+		String nodeName;
+		JSONArray nodeRes;
+		
+		JSONObject itemNodes;
+		JSONArray items;
+		
+		String itemLang;
+		String itemValue;
+				
+		ArrayList<String> itemsList;
+		ArrayList<AndroidStringArray> asStringArrays;
+		
+		for (i = 0; i < stringArrayNodeArray.length(); i++) {
+			
+			saNode = stringArrayNodeArray.optJSONObject(i);
+			if (saNode != null) {
+				
+				nodeName = saNode.optString(JsonKeys.StringArrayNodeArray.StringArrayNode.nameKey);
+				nodeRes = saNode.optJSONArray(JsonKeys.StringArrayNodeArray.StringArrayNode.Resources.key);
+
+				if (   nodeRes != null
+					&& !nodeName.equals("")
+				) {
+					
+					for (j = 0; j < nodeRes.length(); j++) {
+						
+						itemNodes = nodeRes.optJSONObject(j);
+						if (itemNodes != null) {
+
+							items = itemNodes.optJSONArray(JsonKeys.StringArrayNodeArray.StringArrayNode.Resources.ItemNodes.itemsKey);
+							itemLang = itemNodes.optString(JsonKeys.StringArrayNodeArray.StringArrayNode.Resources.ItemNodes.langKey);
+							
+							if (   items != null
+								&& !itemLang.equals("")
+							) {
+								
+								itemsList = new ArrayList<String>();								
+								for (k = 0; k < items.length(); k++) {
+									
+									itemValue = items.optString(k);
+									if (!itemValue.equals("")) {
+										itemsList.add(itemValue);
+									}
+								}
+								
+								if (itemsList.size() > 0) {
+									
+									asStringArrays = this.asStringArraysMap.get(itemLang);
+									if (asStringArrays == null) {
+										asStringArrays = new ArrayList<AndroidStringArray>();
+									}
+									
+									asStringArrays.add(new AndroidStringArray(nodeName, itemsList));
+									this.asStringArraysMap.put(itemLang, asStringArrays);
+									savedCount++;
+								}
+							}
+						}
+					}
+				}
+			}			
+		}
+		
+		return savedCount;
 	}
 	
-	private boolean js2asQuantityStrings(JSONArray ja) {
-		
+	private int saveJs2AsQuantityStrings(JSONArray ja) {
+		return 0; // TBW...
 	}
 	
 	private void decideDefaultLang(HashMap<String, String> defaultLangsPool) {
@@ -218,7 +356,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		
 	}
 	
-	public int parseJsonFiles(String[] paths) {
+	private int parseJsonFiles(String[] paths) {
 		
 		int parsedCount = 0;
 		
@@ -241,9 +379,9 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 						
 						if (jObj != null) {
 							
-							if (   this.js2asStrings(jObj.optJSONArray(JsonKeys.StringNodeArray.key))
-								|| this.js2asStringArrays(jObj.optJSONArray(JsonKeys.StringArrayNodeArray.key))
-								|| this.js2asQuantityStrings(jObj.optJSONArray(JsonKeys.QuantityStringNodeArray.key))
+							if (   this.saveJs2AsStrings(jObj.optJSONArray(JsonKeys.StringNodeArray.key)) > 0
+								|| this.saveJs2AsStringArrays(jObj.optJSONArray(JsonKeys.StringArrayNodeArray.key)) > 0
+								|| this.saveJs2AsQuantityStrings(jObj.optJSONArray(JsonKeys.QuantityStringNodeArray.key)) > 0
 							) {
 								parsedCount++;
 								// Collect all the default langs defined in the different .json files first.
@@ -270,15 +408,16 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		return parsedCount;
 	}
 	
+	
 	/*
 	 * Fields of the Android string resources
 	 **********/
 
 	private int defaultLangIdx = CONST.NO_DEFAULT_LANG_INDEX;
-	private ArrayList<String> supportedLangs = null;
-	private ArrayList<AndroidString> asStrings = null;
-	private ArrayList<AndroidStringArray> asStringArrays = null;
-	private ArrayList<AndroidQuantityString> asQuantityStrings = null;
+	private ArrayList<String> supportedLangs = new ArrayList<String>();
+	private HashMap<String, ArrayList<AndroidString>> asStringsMap = new HashMap<String, ArrayList<AndroidString>>();
+	private HashMap<String, ArrayList<AndroidStringArray>> asStringArraysMap = new HashMap<String, ArrayList<AndroidStringArray>>();
+	private HashMap<String, ArrayList<AndroidQuantityString>> asQuantityStringsMap = new HashMap<String, ArrayList<AndroidQuantityString>>();
 	
 	/*
 	 * Methods @see androidStringResources.IStringResourcesProvider
