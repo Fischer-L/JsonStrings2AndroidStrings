@@ -110,7 +110,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 			// The array storing the string array's items. Each array element stores one item node's data
 			"values" : [
 			
-				// The array storing one item noprojectde's data in the supported langs
+				// The array storing all the string values of this item node in the supported langs
 				"item" : [
 				
 					// This object stores the item node's data
@@ -162,7 +162,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 					// The value of the item node's quantity attribute
 					"quantity" : "one",
 					
-					// The array storing the string values for this quantity in the supported langs
+					// The array storing all the string values for this quantity in the supported langs
 					"strings" : [
 						{
 							// The field indicating which language this string value belongs to, for example this field says the supported lang is English(en).
