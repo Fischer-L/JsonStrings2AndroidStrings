@@ -14,13 +14,14 @@ import org.junit.Test;
 
 import unitestLibs.Constants;
 import unitestLibs.FakeStringResourcesProvider;
+import unitestLibs.Uintility;
 import androidStringResources.AndroidQuantityString;
 import androidStringResources.AndroidString;
 import androidStringResources.AndroidStringArray;
 import androidStringResources.IStringResourcesProvider;
 import androidStringResources.AndroidQuantityString.AndroidQuantityItem;
 
-public class AndroidStringXML_PrivateStringResourcesReaderTest {
+public class AndroidStringXML_Private_StringResourcesReaderTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -112,41 +113,12 @@ public class AndroidStringXML_PrivateStringResourcesReaderTest {
 	 * Assistive method
 	 **********/
 	
-	private Object newTestObj(Object[] args) {
-		
-		Object testObj = null;
-		
-		try {
-			
-			testObj = this.testClsConstructor.newInstance(args);	
-			
-		} catch (InstantiationException
-				 | IllegalAccessException
-				 | IllegalArgumentException
-				 | InvocationTargetException e
-		) {
-			e.printStackTrace();
-			fail("Something wrong with the reflection on newing instance...");
-		}	
-		
-		return testObj;
+	private Object newTestObj(Object[] args) {		
+		return Uintility.Reflection.newTestObj(this.testClsConstructor, args);
 	}
 	
-	private Method getPrivateMethod(String name, Class[] params) {
-		
-		Method method = null;
-		
-		try {
-			
-			method = this.testCls.getDeclaredMethod(name, params);
-			method.setAccessible(true);
-			
-		} catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
-			fail("Something wrong with the reflection on getting method...");
-		}
-		
-		return method;
+	private Method getPrivateMethod(String name, Class[] params) {		
+		return Uintility.Reflection.getPrivateMethod(this.testCls, name, params);
 	}
 
 

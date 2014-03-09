@@ -15,7 +15,7 @@ import androidStringResources.AndroidStringArray;
 public class AndroidStringXMLFormatTest {
 
 	@Test
-	public void testFormatString() {
+	public void testFormatString_NormalCase() {
 		String name = "AndroidString";
 		String value = "AndroidString";
 		AndroidString s = new AndroidString(name, value);
@@ -24,7 +24,7 @@ public class AndroidStringXMLFormatTest {
 	}
 
 	@Test
-	public void testFormatStringArray() {
+	public void testFormatStringArray_NormalCase() {
 		String name = "AndroidStringArray";
 		
 		ArrayList<String> itms = new ArrayList<String>();
@@ -44,7 +44,20 @@ public class AndroidStringXMLFormatTest {
 	}
 
 	@Test
-	public void testFormatQuantityString() {
+	public void testFormatStringArray_NoArrayItemCase() {
+		String name = "AndroidStringArray";
+		
+		ArrayList<String> itms = new ArrayList<String>();
+		
+		String expected = "";
+		
+		AndroidStringArray sa = new AndroidStringArray(name, itms);
+		
+		assertEquals(expected, AndroidStringXMLFormat.formatStringArray(sa));
+	}
+
+	@Test
+	public void testFormatQuantityString_NormalCase() {
 		
 		String expected = "";
 		String name = "AndroidQuantityString";
@@ -57,6 +70,24 @@ public class AndroidStringXMLFormatTest {
 			itms.add(itm);
 		}		
 		expected = "<plurals name=\"" + name + "\">" + expected + "</plurals>";
+		
+		AndroidQuantityString qs = new AndroidQuantityString(name, itms);
+		
+		assertEquals(expected, AndroidStringXMLFormat.formatQuantityString(qs));
+	}
+
+	@Test
+	public void testFormatQuantityString_NoValidQuantityItemCase() {
+		
+		String expected = "";
+		String name = "AndroidQuantityString";
+		
+		AndroidQuantityItem itm;
+		ArrayList<AndroidQuantityItem> itms = new ArrayList<AndroidQuantityItem>();
+		for (int i = 0; i < Constants.VALID_QUANTITIES.length; i++) {
+			itm = new AndroidQuantityItem("NOT_VALID", "ITEM_" + Integer.toString(i));
+			itms.add(itm);
+		}
 		
 		AndroidQuantityString qs = new AndroidQuantityString(name, itms);
 		
