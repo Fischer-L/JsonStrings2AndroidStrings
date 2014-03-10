@@ -15,8 +15,13 @@ import androidStringResources.AndroidQuantityString;
 import androidStringResources.AndroidString;
 import androidStringResources.AndroidStringArray;
 import androidStringResources.IStringResourcesProvider;
+import androidStringResources.AndroidQuantityString.AndroidQuantityItem;
 
 public class JsonStringResourcesProvider implements IStringResourcesProvider {
+	
+	public boolean isDebugMode() {
+		return true;
+	}
 	
 	public JsonStringResourcesProvider(String[] paths) {
 		this.parseJsonFiles(paths);
@@ -93,19 +98,20 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 					
 					public static final String key = "resources";
 					
-					public static class ItemNode {
+					public static class ItemResource {
 						
-						public static final String key = "item";
+						public static final String langKey = "lang";
 						
-						public static final String quantityKey = "quantity";
-						
-						public static class StringsArray {
+						public static class ItemNodes {
 							
-							public static final String key = "strings";
+							public static final String key = "items";
 							
-							public static final String langKey = "lang";
-							
-							public static final String valueKey = "value";
+							public static class ItemNode {
+								
+								public static final String quantityKey = "quantity";
+								
+								public static final String strValueKey = "strValue";
+							}
 						}
 					}
 				}
@@ -163,9 +169,11 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 						if (nodeStr != null) {
 							
 							strLang = nodeStr.optString(JsonKeys.StringNodeArray.StringNode.Resources.StringValue.langKey);
-							strValue = nodeStr.optString(JsonKeys.StringNodeArray.StringNode.Resources.StringValue.strValueKey);
+							strValue = nodeStr.optString(JsonKeys.StringNodeArray.StringNode.Resources.StringValue.strValueKey, null);
 							
-							if (!strLang.equals("")) {
+							if (   strValue != null
+								&& !strLang.equals("")
+							) {
 								
 								asStrings = this.asStringsMap.get(strLang);
 								if (asStrings == null) {
@@ -257,8 +265,88 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		return savedCount;
 	}
 	
-	private int saveJs2AsQuantityStrings(JSONArray ja) {
-		return 0; // TBW...
+	private int saveJs2AsQuantityStrings(JSONArray quantityStringNodeArray) {
+		
+		int i, j, k, savedCount = 0;
+		
+		JSONObject qsNode;
+		
+		String nodeName;
+		JSONArray nodeRes;		
+		
+		JSONObject ItemRes;
+		String lang;
+		
+		JSONArray itemNodes;
+		JSONObject item;
+		String quantity;
+		String strValue;
+		
+		ArrayList<AndroidQuantityItem> asQuantityItems;
+		ArrayList<AndroidQuantityString> asQuantityStrings;
+		
+		for (i = 0; i < quantityStringNodeArray.length(); i++) {
+			
+			qsNode = quantityStringNodeArray.optJSONObject(i);
+			if (qsNode != null) {
+				
+				nodeName = qsNode.optString(JsonKeys.QuantityStringNodeArray.QuantityStringNode.nameKey);
+				nodeRes = qsNode.optJSONArray(JsonKeys.QuantityStringNodeArray.QuantityStringNode.Resources.key);
+				
+				if (   nodeRes != null
+					&& !nodeName.equals("")
+				) {
+				
+					for (j = 0; j < nodeRes.length(); j++) {
+						
+						ItemRes = nodeRes.optJSONObject(j);						
+						if (ItemRes != null) {
+							
+							lang = ItemRes.optString(JsonKeys.QuantityStringNodeArray.QuantityStringNode.Resources.ItemResource.langKey);
+							itemNodes = ItemRes.optJSONArray(JsonKeys.QuantityStringNodeArray.QuantityStringNode.Resources.ItemResource.ItemNodes.key);
+														
+							if (   !lang.equals("")
+								&& itemNodes != null
+							) {
+								
+								asQuantityItems = null;
+								
+								for (k = 0; k < itemNodes.length(); k++) {
+									
+									item = itemNodes.optJSONObject(k);
+									if (item != null) {
+										
+										quantity = item.optString(JsonKeys.QuantityStringNodeArray.QuantityStringNode.Resources.ItemResource.ItemNodes.ItemNode.quantityKey);
+										strValue = item.optString(JsonKeys.QuantityStringNodeArray.QuantityStringNode.Resources.ItemResource.ItemNodes.ItemNode.strValueKey, null);
+									
+										if (   strValue != null
+											&& !quantity.equals("")
+										) {
+											asQuantityItems = new ArrayList<AndroidQuantityItem>();
+											asQuantityItems.add(new AndroidQuantityItem(quantity, strValue));
+											savedCount++;
+										}
+									}
+								}
+								
+								if (asQuantityItems != null && asQuantityItems.size() > 0) {
+									
+									asQuantityStrings = this.asQuantityStringsMap.get(lang);
+									if (asQuantityStrings == null) {
+										asQuantityStrings = new ArrayList<AndroidQuantityString>();
+									}
+									
+									asQuantityStrings.add(new AndroidQuantityString(nodeName, asQuantityItems));
+									this.asQuantityStringsMap.put(lang, asQuantityStrings);									
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return savedCount;
 	}
 	
 	private void decideDefaultLang(HashMap<String, String> defaultLangsPool) {
@@ -273,46 +361,40 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		Iterator<String> pathItr = defaultLangsPool.keySet().iterator();
 		while (pathItr.hasNext()) {
 			
-			path = pathItr.next();
-			lang = defaultLangsPool.get(path);
-			i = langList.indexOf(lang);
-			
-			if (i < 0) {
-			// This lang never appear before
+			try {
 				
-				// Create the list of paths of files which define this lang as the default lang
-				ArrayList<String> pathList = new ArrayList<String>();
-				pathList.add(path);
-
-				langList.add(lang); // Add this new lang
-				langPathList.add(pathList); // Add the list of paths of files which define this new lang as the default lang
+				path = pathItr.next();
+				lang = defaultLangsPool.get(path);				
+				if (lang == CONST.NO_DEFAULT_LANG_DEFINED) { // kick out the case which defines no default lang btw
+					throw new MyException("The file: " + path + " define no default language. If this is ok, please jsut ignore this warning.");
+				}
 				
-			} else {
-			// This lang has appeared in other .json files before
+				i = langList.indexOf(lang);			
+				if (i < 0) {
+				// This lang never appear before
+					
+					// Create the list of paths of files which define this lang as the default lang
+					ArrayList<String> pathList = new ArrayList<String>();
+					pathList.add(path);
+	
+					langList.add(lang); // Add this new lang
+					langPathList.add(pathList); // Add the list of paths of files which define this new lang as the default lang
+					
+				} else {
+				// This lang has appeared in other .json files before
+					
+					// Get the list of paths of files which also define this lang as the default lang
+					// and then add this file's path into that list.
+					langPathList.get(i).add(path);						
+				}
 				
-				// Get the list of paths of files which also define this lang as the default lang
-				// and then add this file's path into that list.
-				langPathList.get(i).add(path);						
+			} catch (MyException e) {
+				e.print1stPoint();					
 			}
 		}
+
 		
-		
-		// Secondly kick out the case which defines no default lang
-		try {
-			for (i = langList.size() - 1; i >= 0; i--) {						
-				if (langList.get(i) == CONST.NO_DEFAULT_LANG_DEFINED) {							
-					MyException e = new MyException("The files: " + langPathList.get(i).toString() + " define no default language. If this is ok, please jsut ignore this warning.");
-					langList.remove(i);
-					langPathList.remove(i);
-					throw e;
-				}						
-			}					
-		} catch (MyException e) {
-			e.print1stPoint();					
-		}
-		
-		
-		// Thirdly pick out one lang as default from the langList
+		// Secondly pick out one lang as default from the langList
 		lang = null;
 		if (langList.size() == 1) {
 		// Ideal case: there is only one default lang defined
@@ -345,11 +427,21 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		
 		// Finally make sure the picked default lang is in the supported langs and then decide the final default lang
 		try {
-			this.defaultLangIdx = this.supportedLangs.indexOf(lang);
-			if (this.defaultLangIdx < 0) {
+			
+			if (lang == null) {
+				
 				this.defaultLangIdx = 0;
-				throw new MyException("The default lang " + lang + "is not in the supported langs; take the lang " + this.supportedLangs.get(this.defaultLangIdx) + " as fallback.");
-			}					
+				throw new MyException("No default lang is defined; take the lang " + this.supportedLangs.get(this.defaultLangIdx) + " as fallback.");
+				
+			} else {
+			
+				this.defaultLangIdx = this.supportedLangs.indexOf(lang);
+				if (this.defaultLangIdx < 0) {
+					this.defaultLangIdx = 0;
+					throw new MyException("The default lang " + lang + " is not in the supported langs; take the lang " + this.supportedLangs.get(this.defaultLangIdx) + " as fallback.");
+				}
+			}
+			
 		} catch (MyException e) {
 			e.print1stPoint();					
 		}
@@ -383,10 +475,10 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 								|| this.saveJs2AsStringArrays(jObj.optJSONArray(JsonKeys.StringArrayNodeArray.key)) > 0
 								|| this.saveJs2AsQuantityStrings(jObj.optJSONArray(JsonKeys.QuantityStringNodeArray.key)) > 0
 							) {
-								parsedCount++;
 								// Collect all the default langs defined in the different .json files first.
 								// Later decide to take which one.
-								defaultLangsPool.put(p, jObj.optString(JsonKeys.defaultLangKey, CONST.NO_DEFAULT_LANG_DEFINED));								
+								defaultLangsPool.put(p, jObj.optString(JsonKeys.defaultLangKey, CONST.NO_DEFAULT_LANG_DEFINED));		
+								parsedCount = defaultLangsPool.size();
 							}
 							
 						} else {
