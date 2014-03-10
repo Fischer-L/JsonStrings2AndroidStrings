@@ -3,6 +3,7 @@ package unitestLibs;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -25,7 +26,7 @@ public class Uintility {
 					 | InvocationTargetException e
 			) {
 				e.printStackTrace();
-				fail("Something wrong with the reflection on newing instance...");
+				fail("Something wrong with the reflection on newing instance of class: " + ctruct.getClass().getName());
 			}	
 			
 			return testObj;
@@ -42,10 +43,28 @@ public class Uintility {
 				
 			} catch (NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
-				fail("Something wrong with the reflection on getting method...");
+				fail("Something wrong with the reflection on getting method: "  + name);
 			}
 			
 			return method;
+		}
+		
+		public static Field getPrivateField(Class cls, String name) {
+			
+			Field field = null;
+			
+			try {
+				
+				field = cls.getDeclaredField(name);
+				field.setAccessible(true);
+				
+			} catch (NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+				fail("Something wrong with the reflection on getting field: " + name);
+			}
+			
+			
+			return field;
 		}
 	}
 	
