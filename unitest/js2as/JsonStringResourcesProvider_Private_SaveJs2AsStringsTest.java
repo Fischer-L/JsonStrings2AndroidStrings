@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import unitestLibs.Constants;
 import unitestLibs.Uintility;
 
 public class JsonStringResourcesProvider_Private_SaveJs2AsStringsTest {
@@ -68,6 +69,19 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsStringsTest {
 			e.printStackTrace();
 		}		
 	}
+	
+	@Test
+	public void testInvalidFormatgCase() {	
+		try {			
+			Object[] args = {
+				new JSONArray(JSONSouce.invalidFormatgCase)
+			};
+			assertEquals(0, this.saveJs2AsStrings.invoke(this.testObj, args));
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}		
+	}
 
 	
 	/*
@@ -82,97 +96,10 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsStringsTest {
 	 * Assistive classes
 	 *********/
 	
-	private static class JSONSouce {
-		
-		public static final String normalCase = ""
-			+"[" // 4 valid string resources
-			+	"{"
-			+		"\"name\" : \"s0\","
-			+		"\"resources\" : ["
-			+			"{"
-			+				"\"lang\" : \"en\","
-			+				"\"strValue\" : \"s0\""
-			+			"}, "
-			+			"{"
-			+				"\"lang\" : \"es\","
-			+				"\"strValue\" : \"s0_in_Espanol\""
-			+			"}"
-			+		"]"
-			+	"}, "
-			+	"{"
-			+		"\"name\" : \"s1\","
-			+		"\"resources\" : ["
-			+			"{"
-			+				"\"lang\" : \"en\","
-			+				"\"strValue\" : \"s1\""
-			+			"}, "
-			+			"{"
-			+				"\"lang\" : \"es\","
-			+				"\"strValue\" : \"s1_in_Espanol\""
-			+			"}"
-			+		"]"
-			+	"}"
-			+"]";
-		
-		public static final String invalidNameCase = ""
-			+"[" // 0 valid string resources
-			+	"{"
-			+		"\"name\" : \"\"," // Invalid name
-			+		"\"resources\" : ["
-			+			"{"
-			+				"\"lang\" : \"en\","
-			+				"\"strValue\" : \"s0\""
-			+			"}, "
-			+			"{"
-			+				"\"lang\" : \"es\","
-			+				"\"strValue\" : \"s0_in_Espanol\""
-			+			"}"
-			+		"]"
-			+	"}, "
-			+	"{"
-			+		"\"name\" : null," // Invalid name
-			+		"\"resources\" : ["
-			+			"{"
-			+				"\"lang\" : \"en\","
-			+				"\"strValue\" : \"s1\""
-			+			"}, "
-			+			"{"
-			+				"\"lang\" : \"es\","
-			+				"\"strValue\" : \"s1_in_Espanol\""
-			+			"}"
-			+		"]"
-			+	"}"
-			+"]";
-		
-		public static final String invalidLangCase = ""
-			+"[" // 2 valid string resources
-			+	"{"
-			+		"\"name\" : \"s0\","
-			+		"\"resources\" : ["
-			+			"{"
-			+				"\"lang\" : \"\"," // Invalid lang
-			+				"\"strValue\" : \"s0\""
-			+			"}, "
-			+			"{"
-			+				"\"lang\" : \"es\","
-			+				"\"strValue\" : \"s0_in_Espanol\""
-			+			"}"
-			+		"]"
-			+	"}, "
-			+	"{"
-			+		"\"name\" : \"s1\","
-			+		"\"resources\" : ["
-			+			"{"
-			+				"\"lang\" : \"en\","
-			+				"\"strValue\" : \"s1\""
-			+			"}, "
-			+			"{"
-			+				"\"lang\" : null," // Invalid lang
-			+				"\"strValue\" : \"s1_in_Espanol\""
-			+			"}"
-			+		"]"
-			+	"}"
-			+"]";
-		
+	private static class JSONSouce {		
+		public static final String normalCase = Constants.JSONSource.StringSource.NORMAL_CASE;		
+		public static final String invalidNameCase = Constants.JSONSource.StringSource.INVALID_NAME_CASE;		
+		public static final String invalidLangCase = Constants.JSONSource.StringSource.INVALID_LANG_CASE;			
+		public static final String invalidFormatgCase = Constants.JSONSource.StringSource.INVALID_FORMAT_CASE;
 	}
 }
