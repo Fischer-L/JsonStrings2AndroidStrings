@@ -113,7 +113,7 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 				
 				// The object storing the string-array reource for one specific langauge
 				{
-					// The field indicating which language this string value belongs to. For example this field says the supported lang is English(en).
+					// The field indicating which language the items values belongs to. For example this field says the supported lang is English(en).
 					"lang" : "en",
 					
 					// The array storing the items nodes' strings in one sepecific language. For example, this array stores the country list in English
@@ -133,48 +133,45 @@ The Js2As program will generate those 3 strings.xml files for you automatically.
 	// The array of the plurals(quantity strings) nodes in the strings.xml. Each object in the array represents one plurals node.
 	// The name of this array, "plurals", is exactly equal to the plurals node's tag name, <plurals>.
 	"plurals" : [
-		// This object storing the info/values of one plurals node reource
+	
+		// This object storing one plurals(quantity strings) node reources in different langauges
 		{
 			// The value of the name attribute
 			"name" : "number_of_songs",
 			
-			// The array storing the plural node's items. Each array element stores one item node's data
+			// The array storing the plural node's resources in different supported languages.
 			"resources" : [
 			
-				// The object storing one item node's data
-				{				
-					// The value of the item node's quantity attribute
-					"quantity" : "one",
+				// The object storing one plurals(quantity strings) resources for one specific language
+				{	
+					// The field indicating which language the items values belongs to, for example this field says the supported lang is English(en).
+					"lang" : "en",
 					
-					// The array storing all the string values for this quantity in the supported langs
-					"strings" : [
-						{
-							// The field indicating which language this string value belongs to, for example this field says the supported lang is English(en).
-							"lang" : "en",
+					// The array storing all the items values for this quantity in the supported langs
+					"items" : [
+						{			
+							// The value of this item node's quantity attribute
+							"quantity" : "one",
 							
 							// The string value, for example, this field is the word, "One song", in Engish
-							"value" : "One song"
-							
+							"strValue" : "One song"
 						},
 						{
-							"lang" : "es",
-							"value" : "One song_in_Espanol"
+							"quantity" : "other",
+							"strValue" : "%d song"
 						}
 					]
-				},
-			
-				// This 2nd object represents the 2nd item node in this plurals(with name="number_of_songs") node.
-				{				
-					"quantity" : "other",
-					
-					"strings" : [
+				},			
+				{	
+					"lang" : "es",
+					"items" : [
 						{
-							"lang" : "en",
-							"value" : "%d song" 							
+							"quantity" : "one",
+							"strValue" : "One song_in_Espanol"
 						},
 						{
-							"lang" : "es",
-							"value" : "%d song_in_Espanol"
+							"quantity" : "other",
+							"strValue" : "%d song_in_Espanol"
 						}
 					]
 				}
