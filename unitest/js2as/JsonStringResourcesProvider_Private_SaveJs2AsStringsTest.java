@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.junit.After;
@@ -23,7 +24,7 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsStringsTest {
 		
 		Class testCls = Class.forName("js2as.JsonStringResourcesProvider");
 		
-		Class[] params = { String[].class };
+		Class[] params = { HashMap.class };
 		Object[] args = { null };
 		this.testObj = Uintility.Reflection.newTestObj(testCls.getConstructor(params), args);
 		

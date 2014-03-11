@@ -19,12 +19,12 @@ import androidStringResources.AndroidQuantityString.AndroidQuantityItem;
 
 public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	
-	public boolean isDebugMode() {
+	public static boolean isDebugMode() {
 		return true;
 	}
 	
-	public JsonStringResourcesProvider(String[] paths) {
-		this.parseJsonFiles(paths);
+	public JsonStringResourcesProvider(HashMap<String, JSONObject> jsonResources) {
+		this.parseJsonResources(jsonResources);
 	}
 
 	/*
@@ -117,23 +117,6 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				}
 			}
 		}
-	}
-	
-	private JSONObject readJsonObject(String path) {
-		
-		JSONObject jo = null;
-		String jsTxt = Utility.Files.readFileAll(path);
-		
-		if (jsTxt != null) {
-			try {
-				jo = new JSONObject(jsTxt);
-			} catch (Exception e) {
-				jo = null;
-				(new MyException("Unable to read the file: " + path + " because of the corrupt JSON.")).print1stPoint();
-			}			
-		}
-		
-		return jo;
 	}
 	
 	private int saveJs2AsStrings(JSONArray stringNodeArray) {
@@ -448,58 +431,48 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		
 	}
 	
-	private int parseJsonFiles(String[] paths) {
+	private int parseJsonResources(HashMap<String, JSONObject> jsonResources) {
 		
 		int parsedCount = 0;
 		
-		if (paths != null && paths.length > 0) {
-			
+		if (jsonResources != null && jsonResources.size() > 0) {
+
 			JSONObject jObj;
 			ArrayList<String> pathsChked = new ArrayList<String>();
 			HashMap<String, String> defaultLangsPool = new HashMap<String, String>(); // key = the file path, value = the default lang defined in this file
 			
-			// Read JSON object from .json files and convert the JSON string resources into the Android string resources one file by one file
-			for (String p : paths) {
+			Set<String> keys = jsonResources.keySet();
+			for (String path : keys) {
 				
-				if (pathsChked.indexOf(p) < 0) {
+				try {
 					
-					pathsChked.add(p);
+					jObj = jsonResources.get(path);		
 					
-					jObj = this.readJsonObject(p);
-					
-					try {	
+					if (jObj != null) {
 						
-						if (jObj != null) {
-							
-							if (   this.saveJs2AsStrings(jObj.optJSONArray(JsonKeys.StringNodeArray.key)) > 0
-								|| this.saveJs2AsStringArrays(jObj.optJSONArray(JsonKeys.StringArrayNodeArray.key)) > 0
-								|| this.saveJs2AsQuantityStrings(jObj.optJSONArray(JsonKeys.QuantityStringNodeArray.key)) > 0
-							) {
-								// Collect all the default langs defined in the different .json files first.
-								// Later decide to take which one.
-								defaultLangsPool.put(p, jObj.optString(JsonKeys.defaultLangKey, CONST.NO_DEFAULT_LANG_DEFINED));		
-								parsedCount = defaultLangsPool.size();
-							}
-							
-						} else {
-							throw new MyException("Fail to parse the JSON resources at " + p + "!");
+						if (   this.saveJs2AsStrings(jObj.optJSONArray(JsonKeys.StringNodeArray.key)) > 0
+							|| this.saveJs2AsStringArrays(jObj.optJSONArray(JsonKeys.StringArrayNodeArray.key)) > 0
+							|| this.saveJs2AsQuantityStrings(jObj.optJSONArray(JsonKeys.QuantityStringNodeArray.key)) > 0
+						) {
+							// Collect all the default langs defined in the different .json files first.
+							// Later decide to take which one.
+							defaultLangsPool.put(path, jObj.optString(JsonKeys.defaultLangKey, CONST.NO_DEFAULT_LANG_DEFINED));		
+							parsedCount = defaultLangsPool.size();
 						}
 						
-					} catch (MyException e) {
-						e.print1stPoint();
+					} else {
+						throw new MyException("Fail to parse the JSON resources at " + path + "!");
 					}
+					
+				} catch (MyException e) {
+					e.print1stPoint();
 				}
-			}
-			
-			// After successfully parsing the JSON resources, let's decide the default lang.
-			if (parsedCount > 0) {
-				this.decideDefaultLang(defaultLangsPool);
-			}
+			}			
 		}
 		
 		return parsedCount;
 	}
-	
+		
 	
 	/*
 	 * Fields of the Android string resources

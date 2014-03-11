@@ -21,7 +21,7 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 		
 		this.testCls = Class.forName("js2as.JsonStringResourcesProvider");
 		
-		Class[] params = { String[].class };
+		Class[] params = { HashMap.class };
 		Object[] args = { null };
 		this.testObj = Uintility.Reflection.newTestObj(this.testCls.getConstructor(params), args);
 		
