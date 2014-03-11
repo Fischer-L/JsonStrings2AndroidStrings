@@ -399,7 +399,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				for (i = 0; i < langList.size(); i++) {	
 					sb.append("    The language " + langList.get(i) + " is defined by the files: " + langPathList.get(i).toString() + "\n");
 				}
-				sb.append("    Try to take the language " + lang + "as default.");
+				sb.append("    Try to take the language " + lang + " as default.");
 				throw new MyException(sb.toString());
 			} catch (MyException e) {
 				e.print1stPoint();					

@@ -28,6 +28,7 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 		params[0] = HashMap.class;
 		this.decideDefaultLang = Uintility.Reflection.getPrivateMethod(this.testCls, "decideDefaultLang", params);
 		
+		// Set up the supported langs
 		this.supportedLangs = Uintility.Reflection.getPrivateField(this.testCls, "supportedLangs");
 		this.supportedLangs.set(this.testObj, this.fakeSupportedLangs());
 	}
@@ -42,40 +43,72 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 		for (int i = 0; i < 10; i ++) {
 			dummyDefaultLangsPool.put("path_" + i, this.fakeSupportedLangs().get(expectedIdx));			
 		}
-		
-		try {
-			Object[] args = {
-				dummyDefaultLangsPool
-			};
-			this.decideDefaultLang.invoke(this.testObj, args);
-			testExpDefaultLangIdx(expectedIdx);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		
+		testExpDefaultLang(dummyDefaultLangsPool, expectedIdx);		
 	}
 
 	@Test
-	public void testNoDefineCase() {
+	public void testNoDefinedCase() {
 		
 		int expectedIdx = 0;
 		
-		// The no-define case has no supported lang defined as default
+		// The no-defined case has no supported lang defined as default
 		HashMap<String, String> dummyDefaultLangsPool = new HashMap<String, String>();
 		for (int i = 0; i < 10; i ++) {
 			dummyDefaultLangsPool.put("path_" + i, null);			
 		}
+		testExpDefaultLang(dummyDefaultLangsPool, expectedIdx);		
+	}
+	
+	@Test
+	public void testMultipleDefinedCase() {
 		
-		try {
-			Object[] args = {
-				dummyDefaultLangsPool
-			};
-			this.decideDefaultLang.invoke(this.testObj, args);
-			testExpDefaultLangIdx(expectedIdx);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+		int i;
+		int expectedIdx = 2;
+		ArrayList<String> slangs = this.fakeSupportedLangs();
+		
+		// The multiple-defined case has multiple supported langs defined as default
+		HashMap<String, String> dummyDefaultLangsPool = new HashMap<String, String>();
+		for (i = 0; i < 3; i ++) {
+			dummyDefaultLangsPool.put("path/a/" + i, slangs.get(0));			
 		}
+		for (i = 0; i < 3; i ++) {
+			dummyDefaultLangsPool.put("path/b/" + i, slangs.get(1));			
+		}
+		for (i = 0; i < 5; i ++) {
+			dummyDefaultLangsPool.put("path/c/" + i, slangs.get(2));			
+		}
+		testExpDefaultLang(dummyDefaultLangsPool, expectedIdx);
+	}
+	
+	@Test
+	public void testUnknownDefinedCase() {
 		
+		int i;
+		int expectedIdx = 1;
+		
+		// The unknown-defined case has unknown lang and supported lang defined as default
+		HashMap<String, String> dummyDefaultLangsPool = new HashMap<String, String>();
+		for (i = 0; i < 3; i ++) {
+			dummyDefaultLangsPool.put("path/a/" + i, "unknown_supported_lang");			
+		}
+		for (i = 0; i < 3; i ++) {
+			dummyDefaultLangsPool.put("path/a/" + i, this.fakeSupportedLangs().get(expectedIdx));			
+		}
+		testExpDefaultLang(dummyDefaultLangsPool, expectedIdx);		
+	}
+	
+	@Test
+	public void testOnlyUnknownDefinedCase() {
+		
+		int i;
+		int expectedIdx = 0;
+		
+		// The only-unknown-defined case has only unknown supported lang defined as default
+		HashMap<String, String> dummyDefaultLangsPool = new HashMap<String, String>();
+		for (i = 0; i < 3; i ++) {
+			dummyDefaultLangsPool.put("path/a/" + i, "unknown_supported_lang");			
+		}
+		testExpDefaultLang(dummyDefaultLangsPool, expectedIdx);
 	}
 	
 	
@@ -93,7 +126,7 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 	 * Assistive methods
 	 **********/
 	
-	private ArrayList<String> fakeSupportedLangs() {		
+	private ArrayList<String> fakeSupportedLangs() {
 		ArrayList<String> langs = new ArrayList<String>();
 		langs.add("en");
 		langs.add("zh");
@@ -101,12 +134,20 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 		return langs;
 	}
 	
-	private void testExpDefaultLangIdx(int expected) {
+	private void testExpDefaultLang(HashMap<String, String> dummyDefaultLangsPool, int expectedIdx) {
+		
 		try {
+			
+			Object[] args = {
+				dummyDefaultLangsPool
+			};
+			this.decideDefaultLang.invoke(this.testObj, args);
+			
 			Field defaultLangIdx = Uintility.Reflection.getPrivateField(this.testCls, "defaultLangIdx");
-			assertEquals(expected, defaultLangIdx.get(this.testObj));
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+			assertEquals(expectedIdx, defaultLangIdx.get(this.testObj));
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
-		}
+		}		
 	}
 }
