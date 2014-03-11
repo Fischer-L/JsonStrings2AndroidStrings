@@ -1,11 +1,13 @@
 package androidStringXML;
 
+import libs.MyException;
 import libs.Utility;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import unitestLibs.Constants;
 import unitestLibs.FakeStringResourcesProvider;
@@ -41,6 +43,12 @@ public class AndroidStringXMLTest {
 	public void testGenerateXMLs_NoDefaultLang() {
 		this.testGenerateXMLs(new FakeProvider(FakeProvider.CASE_NO_DEFAULT_LANG));
 	}
+	
+	@Test(expected=MyException.class)
+	public void testGenerateXMLs_NoSupportedLangs() throws MyException {
+		AndroidStringXML asXML = new AndroidStringXML(this.resRoot, new FakeProvider(FakeProvider.CASE_NO_SUPPORTED_LANGS));
+		asXML.generateXMLs();		
+	}
 
 	
 	/*
@@ -58,7 +66,11 @@ public class AndroidStringXMLTest {
 		
 		// Call the tested method
 		AndroidStringXML asXML = new AndroidStringXML(this.resRoot, fp);
-		asXML.generateXMLs();	
+		try {
+			asXML.generateXMLs();
+		} catch (MyException e) {
+			fail(e.getMessage());
+		}	
 		
 		// Compare the expected xml with the generated one
 		String pathTmpl = this.resRoot + "/values%s/strings.xml";
@@ -97,14 +109,23 @@ public class AndroidStringXMLTest {
 		public String[] getSupportedLangs() {
 			
 			int i = 0;
-			String[] ls;
+			String[] ls = null;
 			String[] sls = super.getSupportedLangs();
-			if (this.testCase.equals(FakeProvider.CASE_LACK_OF_RESOURCE)) {
-				ls = new String[sls.length + 1];
-				ls[0] = "N/A";
-				i = 1;
-			} else {
-				ls = new String[sls.length];
+			
+			switch (this.testCase) {
+			
+				case FakeProvider.CASE_NO_SUPPORTED_LANGS:
+					return null;
+			
+				case FakeProvider.CASE_LACK_OF_RESOURCE:
+					ls = new String[sls.length + 1];
+					ls[0] = "N/A";
+					i = 1;					
+				break;
+				
+				default:
+					ls = new String[sls.length];
+				break;
 			}
 			
 			for (String s : sls) {
@@ -124,6 +145,7 @@ public class AndroidStringXMLTest {
 		public static final int CASE_NORMAL = 0;
 		public static final int CASE_NO_DEFAULT_LANG = 1;
 		public static final int CASE_LACK_OF_RESOURCE = 2;
+		public static final int CASE_NO_SUPPORTED_LANGS = 3;
 	
 	
 		/*

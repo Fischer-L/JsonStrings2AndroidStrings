@@ -74,74 +74,68 @@ public class AndroidStringXML {
     
     /**
      * Call this method to generate strings.xml files in various languages directories after setting up the resource root directory and the string resources provider.
+     * @throws MyException 
      */
-    public void generateXMLs() {
+    public void generateXMLs() throws MyException {
     	
-    	try {
-        	
-    		if (this.resRootDir == null || this.resProvider == null) {
-    			throw new MyException("Not specify any resource root directory or the string resources provider.");
-    		}
+		if (this.resRootDir == null || this.resProvider == null) {
+			throw new MyException("Unable to generate the strings.xml files: No resource root directory or no string resources provider!");
+		}    	
+		
+		AndroidStringXML.StringResourcesReader resReader;
+		try {
+			resReader = new AndroidStringXML.StringResourcesReader(this.resProvider);		
+		} catch (MyException e) {
+			throw new MyException("Unable to generate the strings.xml files: " + e.getMessage());
+		}
+		
+		String xmlBody = null;
+		String xmlName = "strings.xml";
+		String[] langs = resReader.getSupportedLangs();	
+    	AndroidStringXML.StringResourcesWriter resWriter = new AndroidStringXML.StringResourcesWriter();
+		
+    	// Generate strings.xml files for all supported languages
+		for (int i = 0; i < langs.length; i++) {
+			
+			xmlBody = resReader.getXML(langs[i]);
+			
+			try {
+    			if (xmlBody != null) {
+	    			resWriter.writeXML(this.resRootDir + "/values-" + langs[i] + "/" + xmlName, xmlBody);
+    			} else {
+    				throw new MyException("No string resouces for the language, " + langs[i] + ", unable to generate the strings.xml!");
+    			}
+			} catch (MyException e) {
+	    		e.print1stPoint();
+	    	}
+		}
+		
+		// Generate strings.xml files for default language 			
+		try {
     		
-        	AndroidStringXML.StringResourcesReader resReader = new AndroidStringXML.StringResourcesReader(this.resProvider);
-
-	    	String[] langs = resReader.getSupportedLangs();	
-	    	if (langs == null || langs.length > 0) {	    		
-
-	    		String xmlBody = null;
-	    		String xmlName = "strings.xml";
-		    	AndroidStringXML.StringResourcesWriter resWriter = new AndroidStringXML.StringResourcesWriter();
-	    		
-		    	// Generate strings.xml files for all supported languages
-	    		for (int i = 0; i < langs.length; i++) {
-	    			
-	    			xmlBody = resReader.getXML(langs[i]);
-	    			
-	    			try {
-		    			if (xmlBody != null) {
-			    			resWriter.writeXML(this.resRootDir + "/values-" + langs[i] + "/" + xmlName, xmlBody);
-		    			} else {
-		    				throw new MyException("No string resouces for the language, " + langs[i] + ", unable to generate the strings.xml!");
-		    			}
-	    			} catch (MyException e) {
-	    	    		e.print1stPoint();
-	    	    	}
-	    		}
-	    		
-	    		// Generate strings.xml files for default language 			
-    			try {
-    	    		
-    				xmlBody = resReader.getXML(resReader.getDefaultLang());
-    				
-    				// Try to use the 1st-met language string resource as the fallback resource.
-	    			if (xmlBody == null) {	    				
-	    				for (int i = 0; i < langs.length; i++) {
-	    					xmlBody = resReader.getXML(langs[i]);
-	    					if (xmlBody != null) {
-	    						throw new MyException("No string resouces for the default language, " + resReader.getDefaultLang() + ", take the langauge resources, " + langs[i] + ", as the fallback!");
-	    					}
-	    				}	    				
-	    				throw new MyException("No string resouces for the default language, " + resReader.getDefaultLang() + ", unable to generate the strings.xml!");
-	    			}
-	    			
-    			} catch (MyException e) {
-    				
-    	    		e.print1stPoint();
-    	    		
-    	    	} finally {
-    	    		
-    	    		if (xmlBody != null) {
-    	    			resWriter.writeXML(this.resRootDir + "/values/" + xmlName, xmlBody);
-    	    		}
-    	    	}
-	    		
-	    	} else {
-	    		throw new MyException("The string resources have no supported language(s)! Unable to proceed!");
-	    	}   
-	    	
-    	} catch (MyException e) {
+			xmlBody = resReader.getXML(resReader.getDefaultLang());
+			
+			// Try to use the 1st-met language string resource as the fallback resource.
+			if (xmlBody == null) {	    				
+				for (int i = 0; i < langs.length; i++) {
+					xmlBody = resReader.getXML(langs[i]);
+					if (xmlBody != null) {
+						throw new MyException("No string resouces for the default language, " + resReader.getDefaultLang() + ", take the langauge resources, " + langs[i] + ", as the fallback!");
+					}
+				}	    				
+				throw new MyException("No string resouces for the default language, " + resReader.getDefaultLang() + ", unable to generate the strings.xml!");
+			}
+			
+		} catch (MyException e) {
+			
     		e.print1stPoint();
-    	}
+    		
+    	} finally {
+    		
+    		if (xmlBody != null) {
+    			resWriter.writeXML(this.resRootDir + "/values/" + xmlName, xmlBody);
+    		}
+    	}	    	
     }
     
     
@@ -157,8 +151,9 @@ public class AndroidStringXML {
     	/**
     	 * @param provider
     	 * 		The string resources provider who provides the parsed string resources
+    	 * @throws MyException 
     	 */
-        public StringResourcesReader(IStringResourcesProvider provider) {
+        public StringResourcesReader(IStringResourcesProvider provider) throws MyException {
             this.provider = provider;
             this.readStringResources();
         }
@@ -193,33 +188,27 @@ public class AndroidStringXML {
          * 
          * @return
          * 		The count of language of string resources read
+         * @throws MyException 
          */
-        private int readStringResources() {
-            
+        private int readStringResources() throws MyException {            
+           
+            String[] langs = this.provider.getSupportedLangs();            
+            if (langs == null ||langs.length <= 0) {
+                throw new MyException("No supported langs are defined!");
+            }
+                
+            String xml;
             int readCount = 0; // A flag to mark how many lang whose string resource has been read out
-            String[] langs = this.provider.getSupportedLangs();
-            
-            try {
+            for (String s : langs) {
+            	
+                xml = this.buildXML(s, this.provider.getStrings(s))
+                	+ this.buildXML(s, this.provider.getStringArrays(s))
+                	+ this.buildXML(s, this.provider.getQuantityStrings(s));
                 
-                if (langs.length <= 0) {
-                    throw new MyException("No supported langs were found!");
+                 if (!xml.equals("")) {
+                    readCount++;
+                    this.xmlBody.put(s, xml);
                 }
-                
-                String xml;
-                for (String s : langs) {
-                	
-                    xml = this.buildXML(s, this.provider.getStrings(s))
-                    	+ this.buildXML(s, this.provider.getStringArrays(s))
-                    	+ this.buildXML(s, this.provider.getQuantityStrings(s));
-                    
-                     if (!xml.equals("")) {
-                        readCount++;
-                        this.xmlBody.put(s, xml);
-                    }
-                }
-                                
-            } catch (MyException e) {
-                e.print1stPoint();
             }
             
             return readCount;

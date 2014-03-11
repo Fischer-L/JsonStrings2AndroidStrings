@@ -18,7 +18,9 @@ public interface IStringResourcesProvider {
 	 * The default string resource language shall be one of the supported languages.
 	 *
 	 * @return
-	 * 		The default string resource language
+	 * 		- If available: The default language for string resources
+     *      <br/>
+     *      - If unavailable: null
 	 */
 	public String getDefaultLang();
 	
@@ -31,7 +33,9 @@ public interface IStringResourcesProvider {
 	 * The returned supported languages array shall be like [ "kx", "tt-rEE", "aa_bb" ].
 	 * 
 	 * @return
-	 * 		The array of the supported languages.
+	 * 		- If available: The array of the supported languages.
+     *      <br/>
+     *      - If unavailable: null
 	 */
     public String[] getSupportedLangs();
     
