@@ -499,14 +499,13 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	@Override
 	public String getDefaultLang() {	
 		
-		if (this.supportedLangs.size() <= 0
-			|| this.defaultLangIdx < 0
+		if (   this.defaultLangIdx < 0
 			|| this.defaultLangIdx >= this.supportedLangs.size()
 		) {
 			return null;
 		}		
 		
-		return this.supportedLangs.get(this.defaultLangIdx);
+		return this.supportedLangs.get(this.defaultLangIdx);		
 	}
 
 	@Override
