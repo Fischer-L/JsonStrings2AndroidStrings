@@ -120,7 +120,13 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	
 	private int saveJs2AsStrings(JSONArray stringNodeArray) {
 		
-		int i, j, savedCount = 0;
+		int savedCount = 0;
+		
+		if (stringNodeArray == null) {
+			return savedCount;
+		}
+		
+		int i, j;
 		
 		JSONObject sNode;
 		
@@ -182,7 +188,13 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	
 	private int saveJs2AsStringArrays(JSONArray stringArrayNodeArray) {
 		
-		int i, j, k, savedCount = 0;
+		int savedCount = 0;
+		
+		if (stringArrayNodeArray == null) {
+			return savedCount;
+		}
+		
+		int i, j, k;
 		
 		JSONObject saNode;
 		
@@ -260,7 +272,13 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	
 	private int saveJs2AsQuantityStrings(JSONArray quantityStringNodeArray) {
 		
-		int i, j, k, savedCount = 0;
+		int savedCount = 0;
+		
+		if (quantityStringNodeArray == null) {
+			return savedCount;
+		}
+		
+		int i, j, k;
 		
 		JSONObject qsNode;
 		
@@ -303,7 +321,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 							) {
 								
 								// Collect item node resources
-								asQuantityItems = null;
+								asQuantityItems = new ArrayList<AndroidQuantityItem>();
 								
 								for (k = 0; k < itemNodes.length(); k++) {
 									
@@ -316,15 +334,13 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 										if (   strValue != null
 											&& !quantity.equals("")
 										) {
-											asQuantityItems = new ArrayList<AndroidQuantityItem>();
 											asQuantityItems.add(new AndroidQuantityItem(quantity, strValue));
-											savedCount++;
 										}
 									}
 								}
 								
 								// Finally save as Android quantity string resources and save the supported lang
-								if (asQuantityItems != null && asQuantityItems.size() > 0) {
+								if (asQuantityItems.size() > 0) {
 									
 									asQuantityStrings = this.asQuantityStringsMap.get(lang);
 									if (asQuantityStrings == null) {
@@ -333,6 +349,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 									
 									asQuantityStrings.add(new AndroidQuantityString(nodeName, asQuantityItems));
 									this.asQuantityStringsMap.put(lang, asQuantityStrings);
+									savedCount++;
 									
 									if (this.supportedLangs.indexOf(lang) < 0) {
 										this.supportedLangs.add(lang);
@@ -469,9 +486,9 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 					
 					if (jObj != null) {
 						
-						if (   this.saveJs2AsStrings(jObj.optJSONArray(JsonKeys.StringNodeArray.key)) > 0
-							|| this.saveJs2AsStringArrays(jObj.optJSONArray(JsonKeys.StringArrayNodeArray.key)) > 0
-							|| this.saveJs2AsQuantityStrings(jObj.optJSONArray(JsonKeys.QuantityStringNodeArray.key)) > 0
+						if (  this.saveJs2AsStrings(jObj.optJSONArray(JsonKeys.StringNodeArray.key))
+							+ this.saveJs2AsStringArrays(jObj.optJSONArray(JsonKeys.StringArrayNodeArray.key))
+							+ this.saveJs2AsQuantityStrings(jObj.optJSONArray(JsonKeys.QuantityStringNodeArray.key)) > 0
 						) {
 							// Collect all the default langs defined in the different .json files first.
 							// Later decide to take which one.

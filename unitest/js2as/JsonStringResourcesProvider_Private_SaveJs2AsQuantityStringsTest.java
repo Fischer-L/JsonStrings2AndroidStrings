@@ -34,7 +34,7 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsQuantityStringsTest {
 			Object[] args = {
 					new JSONArray(JSONSource.normalCase)	
 				};
-			assertEquals(8, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
+			assertEquals(4, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
@@ -46,7 +46,7 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsQuantityStringsTest {
 			Object[] args = {
 				new JSONArray(JSONSource.invalidNameCase)	
 			};
-			assertEquals(4, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
+			assertEquals(2, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +58,7 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsQuantityStringsTest {
 			Object[] args = {
 				new JSONArray(JSONSource.invalidLangCase)	
 			};
-			assertEquals(4, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
+			assertEquals(2, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
@@ -70,7 +70,7 @@ public class JsonStringResourcesProvider_Private_SaveJs2AsQuantityStringsTest {
 			Object[] args = {
 				new JSONArray(JSONSource.invalidQuantityCase)	
 			};
-			assertEquals(6, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
+			assertEquals(4, this.saveJs2AsQuantityStrings.invoke(this.testObj, args));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
