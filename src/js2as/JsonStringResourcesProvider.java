@@ -153,6 +153,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 							strLang = nodeStr.optString(JsonKeys.StringNodeArray.StringNode.Resources.StringValue.langKey);
 							strValue = nodeStr.optString(JsonKeys.StringNodeArray.StringNode.Resources.StringValue.strValueKey, null);
 							
+							// Finally save as Android string resources and save the supported lang
 							if (   strValue != null
 								&& !strLang.equals("")
 							) {
@@ -165,6 +166,10 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 								asStrings.add(new AndroidString(nodeName, strValue));
 								this.asStringsMap.put(strLang, asStrings);
 								savedCount++;
+								
+								if (this.supportedLangs.indexOf(strLang) < 0) {
+									this.supportedLangs.add(strLang);
+								}
 							}
 						}
 					}
@@ -217,6 +222,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 								&& !itemLang.equals("")
 							) {
 								
+								// Collect item node resources
 								itemsList = new ArrayList<String>();								
 								for (k = 0; k < items.length(); k++) {
 									
@@ -226,6 +232,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 									}
 								}
 								
+								// Finally save as Android string array resources and save the supported lang
 								if (itemsList.size() > 0) {
 									
 									asStringArrays = this.asStringArraysMap.get(itemLang);
@@ -236,6 +243,10 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 									asStringArrays.add(new AndroidStringArray(nodeName, itemsList));
 									this.asStringArraysMap.put(itemLang, asStringArrays);
 									savedCount++;
+									
+									if (this.supportedLangs.indexOf(itemLang) < 0) {
+										this.supportedLangs.add(itemLang);
+									}
 								}
 							}
 						}
@@ -291,6 +302,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 								&& itemNodes != null
 							) {
 								
+								// Collect item node resources
 								asQuantityItems = null;
 								
 								for (k = 0; k < itemNodes.length(); k++) {
@@ -311,6 +323,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 									}
 								}
 								
+								// Finally save as Android quantity string resources and save the supported lang
 								if (asQuantityItems != null && asQuantityItems.size() > 0) {
 									
 									asQuantityStrings = this.asQuantityStringsMap.get(lang);
@@ -319,7 +332,11 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 									}
 									
 									asQuantityStrings.add(new AndroidQuantityString(nodeName, asQuantityItems));
-									this.asQuantityStringsMap.put(lang, asQuantityStrings);									
+									this.asQuantityStringsMap.put(lang, asQuantityStrings);
+									
+									if (this.supportedLangs.indexOf(lang) < 0) {
+										this.supportedLangs.add(lang);
+									}
 								}
 							}
 						}
@@ -458,8 +475,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 						) {
 							// Collect all the default langs defined in the different .json files first.
 							// Later decide to take which one.
-							defaultLangsPool.put(path, jObj.optString(JsonKeys.defaultLangKey, CONST.NO_DEFAULT_LANG_DEFINED));		
-							parsedCount = defaultLangsPool.size();
+							defaultLangsPool.put(path, jObj.optString(JsonKeys.defaultLangKey, CONST.NO_DEFAULT_LANG_DEFINED));	
 						}
 						
 					} else {
@@ -471,6 +487,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				}
 			}		
 			
+			parsedCount = defaultLangsPool.size();
 			if (parsedCount > 0) {
 				this.decideDefaultLang(defaultLangsPool);
 			} else {
@@ -497,39 +514,35 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	 **********/
 	
 	@Override
-	public String getDefaultLang() {	
+	public String getDefaultLang() {
 		
 		if (   this.defaultLangIdx < 0
 			|| this.defaultLangIdx >= this.supportedLangs.size()
 		) {
 			return null;
-		}		
-		
+		}
 		return this.supportedLangs.get(this.defaultLangIdx);		
 	}
 
 	@Override
 	public String[] getSupportedLangs() {
-		// TODO Auto-generated method stub
-		return null;
+		int i = this.supportedLangs.size();
+		return (i <= 0) ? null : this.supportedLangs.toArray(new String[i]);		
 	}
 
 	@Override
 	public ArrayList<AndroidString> getStrings(String lang) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.asStringsMap.get(lang);
 	}
 
 	@Override
 	public ArrayList<AndroidStringArray> getStringArrays(String lang) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.asStringArraysMap.get(lang);
 	}
 
 	@Override
 	public ArrayList<AndroidQuantityString> getQuantityStrings(String lang) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.asQuantityStringsMap.get(lang);
 	}
 		
 }
