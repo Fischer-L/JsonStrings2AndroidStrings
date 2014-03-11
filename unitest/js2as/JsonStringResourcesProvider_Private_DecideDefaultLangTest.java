@@ -8,6 +8,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import libs.MyException;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,7 +40,7 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 		
 		int expectedIdx = 0;
 		
-		// The normal case has only one supported langs defined as default
+		// The normal case has only one supported lang defined as default
 		HashMap<String, String> dummyDefaultLangsPool = new HashMap<String, String>();
 		for (int i = 0; i < 10; i ++) {
 			dummyDefaultLangsPool.put("path_" + i, this.fakeSupportedLangs().get(expectedIdx));			

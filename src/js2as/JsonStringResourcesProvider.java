@@ -22,7 +22,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		return true;
 	}
 	
-	public JsonStringResourcesProvider(HashMap<String, JSONObject> jsonResources) {
+	public JsonStringResourcesProvider(HashMap<String, JSONObject> jsonResources) throws MyException {
 		this.parseJsonResources(jsonResources);
 	}
 
@@ -331,7 +331,11 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		return savedCount;
 	}
 	
-	private void decideDefaultLang(HashMap<String, String> defaultLangsPool) {
+	private void decideDefaultLang(HashMap<String, String> defaultLangsPool) throws MyException {
+		
+		if (this.supportedLangs.size() <= 0) {
+			throw new MyException("No supported langauges defined so unable to decide the default language!");
+		}		
 		
 		int i;
 		String path;
@@ -430,7 +434,7 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		
 	}
 	
-	private int parseJsonResources(HashMap<String, JSONObject> jsonResources) {
+	private int parseJsonResources(HashMap<String, JSONObject> jsonResources) throws MyException {
 		
 		int parsedCount = 0;
 		
@@ -469,6 +473,8 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 			
 			if (parsedCount > 0) {
 				this.decideDefaultLang(defaultLangsPool);
+			} else {
+				throw new MyException("No JSON reources are parsed successfully! Please double check the format!");
 			}
 		}
 		
@@ -491,9 +497,16 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	 **********/
 	
 	@Override
-	public String getDefaultLang() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getDefaultLang() {	
+		
+		if (this.supportedLangs.size() <= 0
+			|| this.defaultLangIdx < 0
+			|| this.defaultLangIdx >= this.supportedLangs.size()
+		) {
+			return null;
+		}		
+		
+		return this.supportedLangs.get(this.defaultLangIdx);
 	}
 
 	@Override
