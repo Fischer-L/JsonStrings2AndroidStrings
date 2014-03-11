@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import libs.MyException;
-import libs.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -438,7 +437,6 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		if (jsonResources != null && jsonResources.size() > 0) {
 
 			JSONObject jObj;
-			ArrayList<String> pathsChked = new ArrayList<String>();
 			HashMap<String, String> defaultLangsPool = new HashMap<String, String>(); // key = the file path, value = the default lang defined in this file
 			
 			Set<String> keys = jsonResources.keySet();
@@ -467,7 +465,11 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 				} catch (MyException e) {
 					e.print1stPoint();
 				}
-			}			
+			}		
+			
+			if (parsedCount > 0) {
+				this.decideDefaultLang(defaultLangsPool);
+			}
 		}
 		
 		return parsedCount;
