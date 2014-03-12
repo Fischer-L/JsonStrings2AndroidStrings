@@ -6,4 +6,4 @@
 *.ear
 bin/
 docs/AndroidStringResourcesGenerator
-!src/externaLibs/*.jar
+!externaLibs/*.jar

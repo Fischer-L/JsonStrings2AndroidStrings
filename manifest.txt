@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: 1.7.0_06 (Oracle Corporation)
+Main-Class: js2as.Js2As
+Class-Path: ./externaLibs/jsonInJava.jar

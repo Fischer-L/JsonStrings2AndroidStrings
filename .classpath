@@ -2,8 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="unitest"/>
+	<classpathentry kind="src" path="integratest"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="src/externaLibs/jsonInJava.jar"/>
+	<classpathentry kind="lib" path="/home/foxbrush/git_repo/Eclipse_Wrokspace/JsonStrings2AndroidStrings/externaLibs/jsonInJava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
