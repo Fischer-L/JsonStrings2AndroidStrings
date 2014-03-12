@@ -1,16 +1,26 @@
 package js2as;
 
+/**
+ * One class in charge of handling the args passed from the command line
+ *
+ */
 public class ArgsMgr {
 	
 	/*
 	 * Fields
 	 *********/
 	
-
 	private static final String cmdTips = "Usage: js2as <the_output_directory_path> <the_json_source_file_path>...";	
 	private static final String[] CMD_HELP = { "-h", "--help" };
 	
+	/**
+	 * The resource output directory root specified by user
+	 */
 	public static String ARG_RES_DIR_ROOT = null;
+	
+	/**
+	 * The .json file paths specified by user
+	 */
 	public static String[] ARG_FILE_PATHS = null;
 	
 	
@@ -18,6 +28,16 @@ public class ArgsMgr {
 	 * Methods 
 	 **********/
 	
+	/**
+	 * Take the args passed from the command line and store them for use. If found error, would show the help tips by the way.
+	 * 
+	 * @param args
+	 * 		The args passed from the command line
+	 * @return
+	 * 		- If OK: true
+	 * 		<br/>
+	 * 		- If NG: false
+	 */
 	public static boolean collectArgs(String[] args) {
 				
 		// Not correct args input or ask for help...

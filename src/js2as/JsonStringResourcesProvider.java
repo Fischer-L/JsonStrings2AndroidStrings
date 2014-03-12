@@ -16,12 +16,30 @@ import androidStringResources.AndroidStringArray;
 import androidStringResources.IStringResourcesProvider;
 import androidStringResources.AndroidQuantityString.AndroidQuantityItem;
 
+/**
+ * Please refer to the androidStringResources.IStringResourcesProvider for its usage
+ *
+ */
 public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	
+	/**
+	 * For debugging
+	 * 
+	 * @return
+	 * 		- At debug mode: true
+	 * 		<br/>
+	 * 		- Not at debug mode: false
+	 */
 	public static boolean isDebugMode() {
-		return true;
+		return false;
 	}
 	
+	/**
+	 * 
+	 * @param jsonResources
+	 * 		One HashMap object which its key is the file path and its value is the JSON object resource parsed from that path
+	 * @throws MyException
+	 */
 	public JsonStringResourcesProvider(HashMap<String, JSONObject> jsonResources) throws MyException {
 		this.parseJsonResources(jsonResources);
 	}
@@ -30,6 +48,10 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	 * Fields, methods & classes for parsing JSON string resources 	
 	 **********/
 	
+	/**
+	 * A class where the constants are put
+	 *
+	 */
 	private static class CONST {
 		
 		public static final int NO_DEFAULT_LANG_INDEX = -1;
@@ -37,6 +59,10 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		public static final String NO_DEFAULT_LANG_DEFINED = null;
 	}
 	
+	/**
+	 * This class is the JSON source format's keys map
+	 *
+	 */
 	private static class JsonKeys {
 				
 		public static final String defaultLangKey = "default_lang";
@@ -118,6 +144,14 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		}
 	}
 	
+	/**
+	 * Take the JSON array of string node resources and save these string resources as Android string resources
+	 * 
+	 * @param stringNodeArray
+	 * 		The JSON array of string node string resources
+	 * @return
+	 * 		The number of Android string nodes saved
+	 */
 	private int saveJs2AsStrings(JSONArray stringNodeArray) {
 		
 		int savedCount = 0;
@@ -186,6 +220,14 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		return savedCount;
 	}
 	
+	/**
+	 * Take the JSON array of string-array node resources and save these string resources as Android string array resources
+	 * 
+	 * @param stringArrayNodeArray
+	 * 		The JSON array of string-array node resources
+	 * @return
+	 * 		The number of Android string array nodes saved
+	 */
 	private int saveJs2AsStringArrays(JSONArray stringArrayNodeArray) {
 		
 		int savedCount = 0;
@@ -270,6 +312,14 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		return savedCount;
 	}
 	
+	/**
+	 * Take the JSON array of plurals node resources and save these string resources as Android quantity string resources
+	 * 
+	 * @param quantityStringNodeArray
+	 * 		The JSON array of plurals node resources
+	 * @return
+	 * 		The number of Android quantity string nodes saved
+	 */
 	private int saveJs2AsQuantityStrings(JSONArray quantityStringNodeArray) {
 		
 		int savedCount = 0;
@@ -365,6 +415,13 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		return savedCount;
 	}
 	
+	/**
+	 * Decide the default language. Ideally there should be only one language defined as default in the JSON source files. However, when there are multiple languages defined as default, we take the voting mechanism, which means the language defined as default by the most files would be be picked out.
+	 * 
+	 * @param defaultLangsPool
+	 * 		One HashMap object which its key is the .json file path and its value is the lang defined as default in that .json file
+	 * @throws MyException
+	 */
 	private void decideDefaultLang(HashMap<String, String> defaultLangsPool) throws MyException {
 		
 		if (this.supportedLangs.size() <= 0) {
@@ -468,6 +525,15 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		
 	}
 	
+	/**
+	 * Take the JSON object resources and call the private methods to parse. This method is the entry point of the job that parses JSON object resources into Android string resources.
+	 * 
+	 * @param jsonResources
+	 * 		Refer to the constructor JsonStringResourcesProvider(HashMap<String, JSONObject> jsonResources)
+	 * @return
+	 * 		The number of .json files parsed successfully
+	 * @throws MyException
+	 */
 	private int parseJsonResources(HashMap<String, JSONObject> jsonResources) throws MyException {
 		
 		int parsedCount = 0;
@@ -519,11 +585,30 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 	/*
 	 * Fields of the Android string resources
 	 **********/
-
+	
+	/**
+	 * The index of the default language in this.supportedLangs
+	 */
 	private int defaultLangIdx = CONST.NO_DEFAULT_LANG_INDEX;
+	
+	/**
+	 * The list of supported languages
+	 */
 	private ArrayList<String> supportedLangs = new ArrayList<String>();
+	
+	/**
+	 * The map of language to Android string resources. The key is language and the value is Android string resources in that language.
+	 */
 	private HashMap<String, ArrayList<AndroidString>> asStringsMap = new HashMap<String, ArrayList<AndroidString>>();
+	
+	/**
+	 * The map of language to Android string array resources. The key is language and the value is Android string resources in that language.
+	 */
 	private HashMap<String, ArrayList<AndroidStringArray>> asStringArraysMap = new HashMap<String, ArrayList<AndroidStringArray>>();
+	
+	/**
+	 * The map of language to Android quanity string resources. The key is language and the value is Android string resources in that language.
+	 */
 	private HashMap<String, ArrayList<AndroidQuantityString>> asQuantityStringsMap = new HashMap<String, ArrayList<AndroidQuantityString>>();
 	
 	/*
