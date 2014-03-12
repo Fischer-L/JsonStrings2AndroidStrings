@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><resources><string name="apply">Apply</string><string-array name="flower_list"><item>Rose</item><item>Tulip</item></string-array><plurals name="number_of_songs"><item quantity="other">%d song</item></plurals><plurals name="number_of_cats"><item quantity="other">%d cats</item></plurals></resources>

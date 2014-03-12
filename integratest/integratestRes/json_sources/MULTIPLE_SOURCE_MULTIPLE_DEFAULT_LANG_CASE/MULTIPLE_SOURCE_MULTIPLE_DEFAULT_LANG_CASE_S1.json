@@ -1,0 +1,7 @@
+{
+	"default_lang" : "en",
+	"string" : [
+		{"name" : "title","resources" : [{"lang" : "en","strValue" : "Title"}, {"lang" : "es","strValue" : "Title_in_Espanol"}]},
+		{"name" : "apply","resources" : [{"lang" : "en","strValue" : "Apply"}, {"lang" : "es","strValue" : "Apply_in_Espanol"}]}
+	]
+}
