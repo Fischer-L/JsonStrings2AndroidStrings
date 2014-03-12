@@ -1,0 +1,19 @@
+{
+	"default_lang" : "es",
+	"plurals" : [
+		{
+			"name" : "number_of_songs",
+			"resources" : [
+				{"lang" : "en","items" : [{"quantity" : "one","strValue" : "One song"},{"quantity" : "other","strValue" : "%d song"}]},
+				{"lang" : "es","items" : [{"quantity" : "one","strValue" : "One song_in_Espanol"},{"quantity" : "other","strValue" : "%d song_in_Espanol"}]}
+			]
+		},
+		{
+			"name" : "number_of_cats",
+			"resources" : [
+				{"lang" : "en","items" : [{"quantity" : "two","strValue" : "2 cats"},{"quantity" : "other","strValue" : "%d cats"}]},
+				{"lang" : "es","items" : [{"quantity" : "two","strValue" : "2 cats_in_Espanol"},{"quantity" : "other","strValue" : "%d cats_in_Espanol"}]}
+			]
+		}
+	]
+}

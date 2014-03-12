@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><resources><string-array name="flower_list"><item>Rose</item><item>Tulip</item></string-array><plurals name="number_of_cats"><item quantity="two">2 cats</item><item quantity="other">%d cats</item></plurals></resources>

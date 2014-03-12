@@ -1,0 +1,33 @@
+{
+	"default_lang" : "en",
+	"STRING" : [
+		{"name" : "title","resources" : [{"lang" : "en","strValue" : "Title"}, {"lang" : "es","strValue" : "Title_in_Espanol"}]},
+		{"name" : "apply","resources" : [{"lang" : "en","strValue" : "Apply"}, {"lang" : "es","strValue" : "Apply_in_Espanol"}]}
+	],
+	"string-array" : [
+		{
+			"NAEM" : "country_list",
+			"resources" : [{"lang" : "en","items" : [ "Canada", "Norway" ]},{"lang" : "es","items" : [ "Canada_in_Espanol", "Norway_in_Espanol" ]}]
+		},
+		{
+			"name" : "flower_list",
+			"resources" : [{"lang" : "en","items" : [ "Rose", "Tulip" ]},{"lang" : "es","items" : [ "Rose_in_Espanol", "Tulip_in_Espanol" ]}]
+		}
+	],
+	"plurals" : [
+		{
+			"name" : "number_of_songs",
+			"RESOURCE" : [
+				{"lang" : "en","items" : [{"quantity" : "one","strValue" : "One song"},{"quantity" : "other","strValue" : "%d song"}]},
+				{"lang" : "es","items" : [{"quantity" : "one","strValue" : "One song_in_Espanol"},{"quantity" : "other","strValue" : "%d song_in_Espanol"}]}
+			]
+		},
+		{
+			"name" : "number_of_cats",
+			"resources" : [
+				{"lang" : "en","items" : [{"quantity" : "two","strValue" : "2 cats"},{"quantity" : "other","strValue" : "%d cats"}]},
+				{"lang" : "es","items" : [{"quantity" : "two","strValue" : "2 cats_in_Espanol"},{"quantity" : "other","strValue" : "%d cats_in_Espanol"}]}
+			]
+		}
+	]
+}
