@@ -10,7 +10,7 @@ public class ArgsMgr {
 	 * Fields
 	 *********/
 	
-	private static final String cmdTips = "Usage: js2as <the_output_directory_path> <the_json_source_file_path>...";	
+	private static final String cmdTips = "Usage: java -jar js2as.jar <the_output_directory_path> <the_json_source_file_path>...";	
 	private static final String[] CMD_HELP = { "-h", "--help" };
 	
 	/**
