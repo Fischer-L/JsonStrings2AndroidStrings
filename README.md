@@ -6,8 +6,10 @@ JsonStrings2AndroidStrings
 This project parses string resources in .json files and then pass the parsed resources to the AndroidStringResourcesGenerator. Utilize the AndroidStringResourcesGenerator project to generate strings.xml files.
 
 ## Commands
-js2as <the_output_directory_path> <the_json_source_file_path>...
-
+If build this project into the js2as.jar, then the command would be:
+```
+#java -jar js2as.jar <the_output_directory_path> <the_json_source_file_path>...
+```
 For example, to generate strings.xml files under the directory: ./res based on the ./a.json file and the ./b.json file, then
 ```
 $ java -jar js2as.jar ./res ./a.json ./b.json
