@@ -67,7 +67,7 @@ public class Js2As {
 				
 				try {
 				
-					jsTxt = Utility.Files.readFileAll(p);
+					jsTxt = Utility.Files.readFileAll(p, "UTF-16");
 					
 					if (jsTxt != null) {
 						
@@ -75,11 +75,11 @@ public class Js2As {
 							
 							if (jsonResources == null) {
 								jsonResources = new HashMap<String, JSONObject>();
-							}						
+							}
 							jsonResources.put(p, new JSONObject(jsTxt));
 							
 						} catch (Exception e) {
-							throw new MyException("Unable to read the file: " + p + " because of the corrupt JSON.");
+							throw new MyException("Unable to read the file: " + p + " because of the corrupt JSON: " + e.getMessage());
 						}
 						
 					} else {
