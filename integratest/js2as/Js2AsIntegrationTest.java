@@ -39,6 +39,9 @@ public class Js2AsIntegrationTest {
 
 		Js2As.main(getArgsForTest(MULTIPLE_SOURCE_MULTIPLE_DEFAULT_LANG_CASE));
 		assertExpected(MULTIPLE_SOURCE_MULTIPLE_DEFAULT_LANG_CASE);
+
+		Js2As.main(getArgsForTest(MIX_LANG_CHAR_CASE));
+		assertExpected(MIX_LANG_CHAR_CASE);
 	}
 	
 	
@@ -60,6 +63,8 @@ public class Js2AsIntegrationTest {
 	private static final int MULTIPLE_SOURCE_DUPLICATE_NAME_CASE = 6; // MULTIPLE_SOURCE_DUPLICATE_NAME_CASE_S1~2.json
 	private static final int MULTIPLE_SOURCE_INVALID_FORMAT_CASE_A = 7; // MULTIPLE_SOURCE_INVALID_FORMAT_CASE_A_S1~2.json
 	private static final int MULTIPLE_SOURCE_MULTIPLE_DEFAULT_LANG_CASE = 8; // MULTIPLE_SOURCE_MULTIPLE_DEFAULT_LANG_CASE_S1~3.json
+	
+	private static final int MIX_LANG_CHAR_CASE = 9; // MIX_LANG_CHAR_CASE.json
 		
 	private static String[] getArgsForTest(int caseType) {
 		
@@ -120,6 +125,11 @@ public class Js2AsIntegrationTest {
 				args.add(jsonSourceDir + "MULTIPLE_SOURCE_MULTIPLE_DEFAULT_LANG_CASE_S3.json");
 			break;
 			
+			case MIX_LANG_CHAR_CASE:
+				jsonSourceDir += "/MIX_LANG_CHAR_CASE/";
+				args.add(jsonSourceDir + "MIX_LANG_CHAR_CASE.json");
+			break;
+			
 			default:
 				MyException e = new MyException("Unknown integration test case!!!");
 				e.print1stPoint();
@@ -130,8 +140,13 @@ public class Js2AsIntegrationTest {
 	}
 
 	private static void assertExpected(int caseType) {
-		
+
 		String expOutputDir = EXPECTED_OUTPUTS_ROOT_DIR;
+		
+		ArrayList<String> xmlPaths = new ArrayList<String>();
+		xmlPaths.add("/values/strings.xml");
+		xmlPaths.add("/values-en/strings.xml");
+		xmlPaths.add("/values-es/strings.xml");
 		
 		switch (caseType) {
 		
@@ -170,6 +185,15 @@ public class Js2AsIntegrationTest {
 				expOutputDir += "/MULTIPLE_SOURCE_MULTIPLE_DEFAULT_LANG_CASE";
 			break;
 			
+			case MIX_LANG_CHAR_CASE:
+				expOutputDir += "/MIX_LANG_CHAR_CASE";
+				xmlPaths.add("/values-zh/strings.xml");
+				xmlPaths.add("/values-jp/strings.xml");
+				xmlPaths.add("/values-ru/strings.xml");
+				xmlPaths.add("/values-ko/strings.xml");
+				xmlPaths.add("/values-cn/strings.xml");
+			break;
+			
 			default:
 				MyException e = new MyException("Unknown integration test case!!!");
 				e.print1stPoint();
@@ -177,13 +201,10 @@ public class Js2AsIntegrationTest {
 		}
 		
 		String actual;
-		String expected;		
-		String[] xmlPaths = {
-			"/values/strings.xml", "/values-en/strings.xml", "/values-es/strings.xml"
-		};	
+		String expected;
 		for (String p : xmlPaths) {
-			actual = Utility.Files.readFileAll(RES_ROOT_DIR + p);
-			expected = Utility.Files.readFileAll(expOutputDir + p);
+			actual = Utility.Files.readFileAll(RES_ROOT_DIR + p, "UTF-8");
+			expected = Utility.Files.readFileAll(expOutputDir + p, "UTF-8");
 			assertEquals("Fail case = " + caseType + " at " + p + " >>> ", expected, actual);
 		}
 		
