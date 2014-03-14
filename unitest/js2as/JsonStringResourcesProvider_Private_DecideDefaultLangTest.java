@@ -65,19 +65,28 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 	public void testMultipleDefinedCase() {
 		
 		int i;
-		int expectedIdx = 2;
+		int expectedIdx = 4;
 		ArrayList<String> slangs = this.fakeSupportedLangs();
 		
 		// The multiple-defined case has multiple supported langs defined as default
 		HashMap<String, String> dummyDefaultLangsPool = new HashMap<String, String>();
-		for (i = 0; i < 3; i ++) {
+		for (i = 0; i < 5; i ++) {
 			dummyDefaultLangsPool.put("path/a/" + i, slangs.get(0));			
 		}
-		for (i = 0; i < 3; i ++) {
+		for (i = 0; i < 4; i ++) {
 			dummyDefaultLangsPool.put("path/b/" + i, slangs.get(1));			
 		}
-		for (i = 0; i < 5; i ++) {
+		for (i = 0; i < 3; i ++) {
 			dummyDefaultLangsPool.put("path/c/" + i, slangs.get(2));			
+		}
+		for (i = 0; i < 6; i ++) {
+			dummyDefaultLangsPool.put("path/d/" + i, slangs.get(3));			
+		}
+		for (i = 0; i < 8; i ++) {
+			dummyDefaultLangsPool.put("path/e/" + i, slangs.get(4));			
+		}
+		for (i = 0; i < 1; i ++) {
+			dummyDefaultLangsPool.put("path/f/" + i, slangs.get(5));			
 		}
 		testExpDefaultLang(dummyDefaultLangsPool, expectedIdx);
 	}
@@ -133,6 +142,9 @@ public class JsonStringResourcesProvider_Private_DecideDefaultLangTest {
 		langs.add("en");
 		langs.add("zh");
 		langs.add("jp");
+		langs.add("ru");
+		langs.add("ko");
+		langs.add("cn");
 		return langs;
 	}
 	

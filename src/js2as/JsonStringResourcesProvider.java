@@ -482,12 +482,13 @@ public class JsonStringResourcesProvider implements IStringResourcesProvider {
 		// Conflict case: there are multiple default langs defined
 			
 			// Take the lang which has been defined most
-			lang = langList.get(0);
+			int mostOne = 0;
 			for (i = 1; i < langList.size(); i++) {							
-				if (langPathList.get(i).size() > langPathList.get(i-1).size()) {
-					lang = langList.get(i);
+				if (langPathList.get(i).size() > langPathList.get(mostOne).size()) {
+					mostOne = i;
 				}
 			}
+			lang = langList.get(mostOne);
 			
 			try {
 				StringBuilder sb = new StringBuilder("Multiple default language defined => \n");
