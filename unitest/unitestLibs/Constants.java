@@ -1,19 +1,7 @@
 package unitestLibs;
 
 public class Constants {
-	
-	public static final String TEST_RES_ROOT = "./unitest/unitestRes";
-	
-	public static final String TEST_RES_JSON = Constants.TEST_RES_ROOT + "/strings.json";
-	
-	public static final String TEST_RES_JSON_CONTENT =   ""
-														+"{"
-														+"    \"name\" : \"Name\","
-														+"    \"age\" : 18,"
-														+"    \"addr\" : \"abc, def, 987 fg, jkl\","
-														+"    \"array\" : [0, 1, 2, 3]"
-														+"}";
-	
+
 	public static class JSONSource {
 		
 		public static final String[] SUPPORTED_LANGS = { "en", "es" };
