@@ -24,7 +24,7 @@ public class Js2As {
 			}
 			
 			System.out.println(">>> Reading the JSON files to get the JSON resources...");
-			HashMap<String, JSONObject> jsonResources = Js2As.readJsonFiles(ArgsMgr.ARG_FILE_PATHS);
+			HashMap<String, JSONObject> jsonResources = Js2As.readJsonFiles(ArgsMgr.ARG_FILE_PATHS, ArgsMgr.ARG_FILE_CHARSET);
 			if (jsonResources == null) {
 				throw (new MyException("Reading the JSON files fails or no valid JSON resources available!!!"));
 			}
@@ -50,12 +50,14 @@ public class Js2As {
 	 * 
 	 * @param paths
 	 * 		The paths of .json files
+	 * @param charset
+	 * 		The charset used when reading files
 	 * @return
 	 * 		- If OK: One HashMap object which its key is the file path and its value is the JSON object resource parsed from that path
 	 * 		<br/>
 	 * 		- If NG: null
 	 */
-	public static HashMap<String, JSONObject> readJsonFiles(String[] paths) {
+	public static HashMap<String, JSONObject> readJsonFiles(String[] paths, String charset) {
 		
 		HashMap<String, JSONObject> jsonResources = null;
 		
@@ -67,7 +69,7 @@ public class Js2As {
 				
 				try {
 				
-					jsTxt = Utility.Files.readFileAll(p, "UTF-16");
+					jsTxt = Utility.Files.readFileAll(p, charset);
 					
 					if (jsTxt != null) {
 						
@@ -77,7 +79,7 @@ public class Js2As {
 								jsonResources = new HashMap<String, JSONObject>();
 							}
 							jsonResources.put(p, new JSONObject(jsTxt));
-							
+														
 						} catch (Exception e) {
 							jsTxt = "\r\n        ********** corrupt JSON **********\r\n        " + jsTxt + "\r\n        **********************************\r\n";
 							throw new MyException("Unable to read the file: " + p + " because of the corrupt JSON: " + e.getMessage() + jsTxt);	
