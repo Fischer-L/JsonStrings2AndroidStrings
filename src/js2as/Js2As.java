@@ -79,7 +79,7 @@ public class Js2As {
 							jsonResources.put(p, new JSONObject(jsTxt));
 							
 						} catch (Exception e) {
-							jsTxt = "\n        ********** corrupt JSON **********\n        " + jsTxt + "\n        **********************************\n";
+							jsTxt = "\r\n        ********** corrupt JSON **********\r\n        " + jsTxt + "\r\n        **********************************\r\n";
 							throw new MyException("Unable to read the file: " + p + " because of the corrupt JSON: " + e.getMessage() + jsTxt);	
 						}
 						
