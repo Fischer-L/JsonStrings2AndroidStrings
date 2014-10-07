@@ -18,6 +18,9 @@ public class ArgsMgr {
 	
 	private static final String CMD_CHARSET = "-ch=";
 	
+	/**
+	 * The charset used when reading files
+	 */
 	public static String ARG_FILE_CHARSET = "UTF-8";
 	
 	/**
